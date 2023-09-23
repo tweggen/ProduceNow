@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:ProduceNow.Models"
+             xmlns:vm="clr-namespace:ProduceNow.ViewModels"
+             xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System.ObjectModel"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ProduceNow.Views.ChannelPresentationsView"
+             x:DataType="vm:ChannelPresentationsViewModel"
+             >
+  <DockPanel>
+    <Button DockPanel.Dock="Bottom"
+            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).AddChannel}">
+      Add a channel
+    </Button>
+    <ItemsControl ItemsSource="{Binding Items}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <CheckBox Margin="4"
+                    IsChecked="{Binding IsRecording}"
+                    Content="{Binding ShortTitle}"/>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </DockPanel>
+</UserControl>
