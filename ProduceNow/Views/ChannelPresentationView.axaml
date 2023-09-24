@@ -9,10 +9,9 @@
     <StackPanel
         HorizontalAlignment="Center"
         Orientation="Vertical">
-        <Image Width="40" Height="40" Source="/Assets/Record.png"  IsVisible="{Binding IsRecording}"/>
-        <Image Width="40" Height="40" Source="/Assets/NoRecord.png"  IsVisible="{Binding !IsRecording}"/>
-        <TextBlock Foreground="#aaaaaa" Text="{Binding ShortTitle}"/>
-        <TextBlock Foreground="#aaaaaa" Text="{Binding StateString}"/>
-        <TextBlock Foreground="#aaaaaa" Background="#667788" Width="150" Height="150">Overlay Picture</TextBlock>
+        <Image Width="40" Height="40" Source="{Binding RecordImage}"/>
+        <TextBlock Margin="0,10,0,0" TextAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{Binding StandbyColor}" Text="{Binding ShortTitle}"/>
+        <TextBlock Margin="0,5,0,10" TextAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{Binding StateColor}" Text="{Binding StateString}"/>
+        <Image Width="160" Height="160" Source="{ Binding MiniPicture}"/>
     </StackPanel>    
 </UserControl>

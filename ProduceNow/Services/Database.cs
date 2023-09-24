@@ -8,8 +8,8 @@ public class Database
 {
     private List<ChannelPresentation> _listChannels = new()
     {
-        new ChannelPresentation { ShortTitle = "Studio A", IsRecording = true, StateString = "recording" },
-        new ChannelPresentation { ShortTitle = "Studio B", IsRecording = false, StateString = "monitoring" },
+        new ChannelPresentation { ShortTitle = "Studio A", IsRecording = true, StateString = "recording", Uri="avares://ProduceNow/Assets/StudioA.png" },
+        new ChannelPresentation { ShortTitle = "Studio B", IsRecording = false, StateString = "monitoring", Uri="avares://ProduceNow/Assets/StudioB.png" },
     };
     
     
