@@ -4,24 +4,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="clr-namespace:ProduceNow.Models"
              xmlns:vm="clr-namespace:ProduceNow.ViewModels"
+             xmlns:v="clr-namespace:ProduceNow.Views"
              xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System.ObjectModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ProduceNow.Views.ChannelPresentationsView"
              x:DataType="vm:ChannelPresentationsViewModel"
              >
-  <DockPanel>
-    <Button DockPanel.Dock="Bottom"
-            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).AddChannel}">
-      Add a channel
-    </Button>
+  <WrapPanel
+    Orientation="Horizontal"
+    HorizontalAlignment="Left"
+    >
+    <!-- TextBlock>      
+      blafasel
+    </TextBlock -->
     <ItemsControl ItemsSource="{Binding Items}">
       <ItemsControl.ItemTemplate>
         <DataTemplate>
-          <CheckBox Margin="4"
-                    IsChecked="{Binding IsRecording}"
-                    Content="{Binding ShortTitle}"/>
+          <TextBlock>Blarp</TextBlock>
+          <!-- TextBlock Text="{Binding ShortTitle}"/ -->
+          <!-- v:ChannelPresentationView Content="{Binding }"/ -->
         </DataTemplate>
       </ItemsControl.ItemTemplate>
     </ItemsControl>
-  </DockPanel>
+  </WrapPanel>
 </UserControl>

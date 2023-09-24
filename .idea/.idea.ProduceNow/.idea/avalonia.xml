@@ -6,8 +6,10 @@
         <entry key="ProduceNow/App.axaml" value="ProduceNow/ProduceNow.csproj" />
         <entry key="ProduceNow/MainWindow.axaml" value="ProduceNow/ProduceNow.csproj" />
         <entry key="ProduceNow/Views/AddChannelView.axaml" value="ProduceNow/ProduceNow.csproj" />
+        <entry key="ProduceNow/Views/ChannelPresentationView.axaml" value="ProduceNow/ProduceNow.csproj" />
         <entry key="ProduceNow/Views/ChannelPresentationsView.axaml" value="ProduceNow/ProduceNow.csproj" />
         <entry key="ProduceNow/Views/MainWindow.axaml" value="ProduceNow/ProduceNow.csproj" />
+        <entry key="ProduceNow/Views/RecChannelsView.axaml" value="ProduceNow/ProduceNow.csproj" />
       </map>
     </option>
   </component>

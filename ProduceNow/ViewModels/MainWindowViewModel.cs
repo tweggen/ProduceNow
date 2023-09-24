@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using System.Reactive.Linq;
 using ReactiveUI;
 using ProduceNow.Models;
@@ -10,37 +11,39 @@ namespace ProduceNow.ViewModels;
 
 class MainWindowViewModel : ViewModelBase
 {
-    ViewModelBase content;
+   ViewModelBase content;
 
-    public MainWindowViewModel(Database db)
+    public MainWindowViewModel()
     {
-        Content = List = new ChannelPresentationsViewModel(db.GetItems());
+        Content = VMRecChannels = new RecChannelsViewModel();
     }
 
+   
     public ViewModelBase Content
     {
         get => content;
         private set => this.RaiseAndSetIfChanged(ref content, value);
     }
 
-    public ChannelPresentationsViewModel List { get; }
+
+    public RecChannelsViewModel VMRecChannels { get; }
 
     public void AddChannel()
     {
-        var vm = new AddChennelViewModel();
+        var vm = new AddChannelViewModel();
 
         Observable.Merge(
                 vm.Ok,
                 vm.Cancel.Select(_ => (ChannelPresentation)null))
             .Take(1)
-            .Subscribe(model =>
+            .Subscribe(modelChannelPresentation =>
             {
-                if (model != null)
+                if (modelChannelPresentation != null)
                 {
-                    List.Items.Add(model);
+                    Database.Instance.Add(modelChannelPresentation);
                 }
 
-                Content = List;
+                Content = VMRecChannels;
             });
 
         Content = vm;

@@ -5,6 +5,8 @@
         Title="ProduceNow"
         xmlns:views="clr-namespace:ProduceNow.Views"
         xmlns:vm="clr-namespace:ProduceNow.ViewModels"
+        xmlns:v="clr-namespace:ProduceNow.Views"
         x:DataType="vm:MainWindowViewModel"
-        Content="{Binding Content}">
+        Content="{Binding Content}"
+        >
 </Window>

@@ -6,11 +6,11 @@ using ProduceNow.Models;
 namespace ProduceNow.ViewModels;
 
 
-class AddChennelViewModel : ViewModelBase
+class AddChannelViewModel : ViewModelBase
 {
     string shortTitle;
 
-    public AddChennelViewModel()
+    public AddChannelViewModel()
     {
         var okEnabled = this.WhenAnyValue(
             x => x.ShortTitle,
