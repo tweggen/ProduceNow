@@ -17,7 +17,6 @@
         <WrapPanel
           Orientation="Horizontal"
           VerticalAlignment="Center"
-          Background="#77aa66"
           />
         </ItemsPanelTemplate>
       </ItemsControl.ItemsPanel>
@@ -25,7 +24,7 @@
         <DataTemplate>
           <!-- TextBlock Text="{Binding ShortTitle}"/ -->
           <v:ChannelPresentationView
-            Width="170" Height="170" Margin="5"
+            Width="170" Height="250" Margin="5"
             Content="{Binding }"/>
         </DataTemplate>
       </ItemsControl.ItemTemplate>

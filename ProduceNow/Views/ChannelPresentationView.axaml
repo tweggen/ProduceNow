@@ -3,20 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             Background="#772299"
              xmlns:vm="clr-namespace:ProduceNow.ViewModels"
              x:DataType="vm:ChannelPresentationViewModel"
              x:Class="ProduceNow.Views.ChannelPresentationView">
     <StackPanel
         HorizontalAlignment="Center"
-        Orientation="Vertical"
-        Background="#222222">
-        <TextBlock Foreground="#dd6622" IsVisible="{Binding IsRecording}">
-            Rec
-        </TextBlock>
-        <TextBlock Foreground="#aaaaaa" IsVisible="{Binding !IsRecording}">
-            Stp
-        </TextBlock>
+        Orientation="Vertical">
+        <Image Width="40" Height="40" Source="/Assets/Record.png"  IsVisible="{Binding IsRecording}"/>
+        <Image Width="40" Height="40" Source="/Assets/NoRecord.png"  IsVisible="{Binding !IsRecording}"/>
         <TextBlock Foreground="#aaaaaa" Text="{Binding ShortTitle}"/>
         <TextBlock Foreground="#aaaaaa" Text="{Binding StateString}"/>
         <TextBlock Foreground="#aaaaaa" Background="#667788" Width="150" Height="150">Overlay Picture</TextBlock>

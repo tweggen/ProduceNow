@@ -6,7 +6,7 @@
              xmlns:v="clr-namespace:ProduceNow.Views"
              mc:Ignorable="d"
              x:Class="ProduceNow.Views.RecChannelsView">
-    <DockPanel Background="#5555cc">
+    <DockPanel Background="#222222">
         <Button DockPanel.Dock="Top"
             Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).AddChannel}">
             Add a channel

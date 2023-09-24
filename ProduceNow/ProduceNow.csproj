@@ -23,7 +23,9 @@
   <ItemGroup>
     <Folder Include="Assets\" />
   </ItemGroup>
-
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**"/>
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Update="Views\MainWindow.axaml.cs">
