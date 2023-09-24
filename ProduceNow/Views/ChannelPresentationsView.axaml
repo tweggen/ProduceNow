@@ -6,25 +6,29 @@
              xmlns:vm="clr-namespace:ProduceNow.ViewModels"
              xmlns:v="clr-namespace:ProduceNow.Views"
              xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System.ObjectModel"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d"
              x:Class="ProduceNow.Views.ChannelPresentationsView"
              x:DataType="vm:ChannelPresentationsViewModel"
              >
-  <WrapPanel
-    Orientation="Horizontal"
-    HorizontalAlignment="Left"
-    >
-    <!-- TextBlock>      
-      blafasel
-    </TextBlock -->
+  <ScrollViewer>
     <ItemsControl ItemsSource="{Binding Items}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+        <WrapPanel
+          Orientation="Horizontal"
+          VerticalAlignment="Center"
+          Background="#77aa66"
+          />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
       <ItemsControl.ItemTemplate>
         <DataTemplate>
-          <TextBlock>Blarp</TextBlock>
           <!-- TextBlock Text="{Binding ShortTitle}"/ -->
-          <!-- v:ChannelPresentationView Content="{Binding }"/ -->
+          <v:ChannelPresentationView
+            Width="170" Height="170" Margin="5"
+            Content="{Binding }"/>
         </DataTemplate>
       </ItemsControl.ItemTemplate>
     </ItemsControl>
-  </WrapPanel>
+  </ScrollViewer>
 </UserControl>

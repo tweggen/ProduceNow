@@ -4,9 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ProduceNow.ViewModels"
              xmlns:v="clr-namespace:ProduceNow.Views"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d"
              x:Class="ProduceNow.Views.RecChannelsView">
-    <DockPanel>
+    <DockPanel Background="#5555cc">
         <Button DockPanel.Dock="Top"
             Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).AddChannel}">
             Add a channel

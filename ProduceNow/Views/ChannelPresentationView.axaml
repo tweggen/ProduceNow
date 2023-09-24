@@ -2,21 +2,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d"
+             Background="#772299"
              xmlns:vm="clr-namespace:ProduceNow.ViewModels"
              x:DataType="vm:ChannelPresentationViewModel"
              x:Class="ProduceNow.Views.ChannelPresentationView">
     <StackPanel
-            HorizontalAlignment="Center"
-            Orientation="Vertical">
-        <TextBlock IsVisible="{Binding IsRecording}">
+        HorizontalAlignment="Center"
+        Orientation="Vertical"
+        Background="#222222">
+        <TextBlock Foreground="#dd6622" IsVisible="{Binding IsRecording}">
             Rec
         </TextBlock>
-        <TextBlock IsVisible="{Binding !IsRecording}">
+        <TextBlock Foreground="#aaaaaa" IsVisible="{Binding !IsRecording}">
             Stp
         </TextBlock>
-        <TextBlock Text="{Binding ShortTitle}"/>
-        <TextBlock Text="{Binding StateString}"/>
-        <TextBlock Width="200" Height="200">Overlay Picture</TextBlock>
+        <TextBlock Foreground="#aaaaaa" Text="{Binding ShortTitle}"/>
+        <TextBlock Foreground="#aaaaaa" Text="{Binding StateString}"/>
+        <TextBlock Foreground="#aaaaaa" Background="#667788" Width="150" Height="150">Overlay Picture</TextBlock>
     </StackPanel>    
 </UserControl>
