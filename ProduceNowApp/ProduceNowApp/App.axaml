@@ -5,6 +5,10 @@
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
+    <Application.Resources>
+        <FontFamily x:Key="LatoRegular">avares://ProduceNowApp/Assets/Lato-Regular.ttf</FontFamily>
+    </Application.Resources>
+             
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>

@@ -6,6 +6,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ProduceNowApp.Views.MainView"
              x:DataType="vm:MainViewModel"
+             TextElement.FontFamily="LatoRegular"
              Content="{Binding Content}"
              >
 </UserControl>

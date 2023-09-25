@@ -11,6 +11,11 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
+  <!-- I believe we need to explicitely add the font as a ressource -->
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\Lato-Regular.ttf" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
