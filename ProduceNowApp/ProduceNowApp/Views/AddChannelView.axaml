@@ -3,9 +3,9 @@
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
               mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="300"
-              xmlns:vm="clr-namespace:ProduceNow.ViewModels"
+              xmlns:vm="clr-namespace:ProduceNowApp.ViewModels"
               x:DataType="vm:AddChannelViewModel"
-              x:Class="ProduceNow.Views.AddChannelView">
+              x:Class="ProduceNowApp.Views.AddChannelView">
     <DockPanel>
         <Button DockPanel.Dock="Bottom" Command="{Binding Cancel}">Cancel</Button>
         <Button DockPanel.Dock="Bottom" Command="{Binding Ok}">OK</Button>

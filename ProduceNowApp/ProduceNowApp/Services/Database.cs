@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
-using ProduceNow.Models;
+using ProduceNowApp.Models;
 
-namespace ProduceNow.Services;
+namespace ProduceNowApp.Services;
 
 public class Database
 {
     private List<ChannelPresentation> _listChannels = new()
     {
-        new ChannelPresentation { ShortTitle = "Studio A", IsRecording = true, StateString = "recording", Uri="avares://ProduceNow/Assets/StudioA.png" },
-        new ChannelPresentation { ShortTitle = "Studio B", IsRecording = false, StateString = "monitoring", Uri="avares://ProduceNow/Assets/StudioB.png" },
+        new ChannelPresentation { ShortTitle = "Studio A", IsRecording = true, StateString = "recording", Uri="avares://ProduceNowApp/Assets/StudioA.png" },
+        new ChannelPresentation { ShortTitle = "Studio B", IsRecording = false, StateString = "monitoring", Uri="avares://ProduceNowApp/Assets/StudioB.png" },
     };
     
     

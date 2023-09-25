@@ -2,13 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:ProduceNow.ViewModels"
-             xmlns:v="clr-namespace:ProduceNow.Views"
+             xmlns:vm="clr-namespace:ProduceNowApp.ViewModels"
+             xmlns:v="clr-namespace:ProduceNowApp.Views"
              mc:Ignorable="d"
-             x:Class="ProduceNow.Views.RecChannelsView">
+             x:Class="ProduceNowApp.Views.RecChannelsView">
     <DockPanel Background="#222222">
         <Button DockPanel.Dock="Top"
-            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).AddChannel}">
+            Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).AddChannel}">
             Add a channel
         </Button>
         <v:ChannelPresentationsView/>
