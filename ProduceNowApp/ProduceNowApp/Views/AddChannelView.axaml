@@ -7,8 +7,10 @@
               x:DataType="vm:AddChannelViewModel"
               x:Class="ProduceNowApp.Views.AddChannelView">
     <DockPanel>
-        <Button DockPanel.Dock="Bottom" Command="{Binding Cancel}">Cancel</Button>
-        <Button DockPanel.Dock="Bottom" Command="{Binding Ok}">OK</Button>
+        <StackPanel>
+            <Button DockPanel.Dock="Bottom" Command="{Binding Cancel}">Cancel</Button>
+            <Button DockPanel.Dock="Bottom" Command="{Binding Ok}">OK</Button>
+        </StackPanel>
         <TextBox AcceptsReturn="False"
                  Text="{Binding ShortTitle}"
                  Watermark="Description"/>

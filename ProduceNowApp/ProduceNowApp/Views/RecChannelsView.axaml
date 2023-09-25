@@ -5,12 +5,33 @@
              xmlns:vm="clr-namespace:ProduceNowApp.ViewModels"
              xmlns:v="clr-namespace:ProduceNowApp.Views"
              mc:Ignorable="d"
-             x:Class="ProduceNowApp.Views.RecChannelsView">
+             x:Class="ProduceNowApp.Views.RecChannelsView"
+             xmlns:ic="using:FluentIcons.Avalonia">
     <DockPanel Background="#222222">
-        <Button DockPanel.Dock="Top"
-            Command="{Binding $parent[v:MainView].((vm:MainViewModel)DataContext).AddChannel}">
-            Add a channel
-        </Button>
-        <v:ChannelPresentationsView/>
+        <StackPanel d:DesignWidth="80" DockPanel.Dock="Left" Orientation="Vertical">
+            <Button Background="#222222" Margin="0,0,0,10"
+                    Command="{Binding $parent[v:MainView].((vm:MainViewModel)DataContext).AddChannel}">
+                <ic:SymbolIcon Foreground="#777777" FontSize="30" Symbol="Add" IsFilled="True" />
+            </Button>
+            <Button Background="#222222" Margin="0,0,0,10">
+                <ic:SymbolIcon Foreground="#777777" FontSize="30" Symbol="Settings" IsFilled="True" />
+            </Button>
+            <Button Background="#222222">
+                <ic:SymbolIcon Foreground="#777777" FontSize="30" Symbol="OpenFolder" IsFilled="True" />
+            </Button>
+        </StackPanel>
+        <StackPanel d:DesignWidth="160" DockPanel.Dock="Right" Orientation="Horizontal">
+            <StackPanel Margin="10" Orientation="Vertical" VerticalAlignment="Center">
+                <Image HorizontalAlignment="Center" Source="avares://ProduceNowApp/Assets/gauge-net.png" Width="80" Height="120"/>
+                <TextBlock HorizontalAlignment="Center" Foreground="#aaaaaa">120 Mbit/s</TextBlock>
+                <TextBlock HorizontalAlignment="Center" Foreground="#777777">2x SRT</TextBlock>
+            </StackPanel>
+            <StackPanel Margin="10" Orientation="Vertical" VerticalAlignment="Center">
+                <Image HorizontalAlignment="Center" Source="avares://ProduceNowApp/Assets/gauge-disk.png" Width="120" Height="120"/>
+                <TextBlock HorizontalAlignment="Center" Foreground="#aaaaaa">- 5h:30 (80%)</TextBlock>
+                <TextBlock HorizontalAlignment="Center" Foreground="#777777">XDCAM HD 50</TextBlock>
+            </StackPanel>
+        </StackPanel>
+        <v:ChannelPresentationsView VerticalAlignment="Center"/>
     </DockPanel>
 </UserControl>

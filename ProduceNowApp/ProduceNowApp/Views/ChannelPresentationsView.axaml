@@ -24,7 +24,7 @@
         <DataTemplate>
           <!-- TextBlock Text="{Binding ShortTitle}"/ -->
           <v:ChannelPresentationView
-            Width="170" Height="250" Margin="5"
+            Width="200" Height="250" Margin="5"
             Content="{Binding }"/>
         </DataTemplate>
       </ItemsControl.ItemTemplate>
