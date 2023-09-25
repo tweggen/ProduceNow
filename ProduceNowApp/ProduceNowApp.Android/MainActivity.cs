@@ -7,7 +7,7 @@ using Avalonia.ReactiveUI;
 namespace ProduceNowApp.Android;
 
 [Activity(
-    Label = "ProduceNowApp",
+    Label = "ProduceNow",
     Theme = "@style/MyTheme.NoActionBar",
     Icon = "@drawable/icon",
     MainLauncher = true,
