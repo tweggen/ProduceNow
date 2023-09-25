@@ -8,7 +8,7 @@
              x:Class="ProduceNowApp.Views.RecChannelsView">
     <DockPanel Background="#222222">
         <Button DockPanel.Dock="Top"
-            Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).AddChannel}">
+            Command="{Binding $parent[v:MainView].((vm:MainViewModel)DataContext).AddChannel}">
             Add a channel
         </Button>
         <v:ChannelPresentationsView/>
