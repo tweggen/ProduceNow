@@ -1,5 +1,6 @@
 using System;
 using System.Reactive;
+using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using ReactiveUI;
@@ -24,6 +25,27 @@ public class ChannelPresentationViewModel : ViewModelBase
     public bool IsRecording
     {
         get => _channelPresentation.IsRecording;
+        private set
+        {
+            var isRecording = _channelPresentation.IsRecording;
+            if (value != isRecording)
+            {
+                _channelPresentation.IsRecording = value;
+                // TXWTODO: We are using raise if changed but changing it.
+                this.RaisePropertyChanged("IsRecording");
+                this.RaisePropertyChanged("RecordImage");
+                this.RaisePropertyChanged("StateColor");
+                if (value)
+                {
+                    _channelPresentation.StateString = "recording";
+                }
+                else
+                {
+                    _channelPresentation.StateString = "monitoring";
+                }
+                this.RaisePropertyChanged("StateString");
+            }
+        }
     }
 
     public Bitmap? MiniPicture { get; }
@@ -39,6 +61,24 @@ public class ChannelPresentationViewModel : ViewModelBase
     public Bitmap RecordImage
     {
         get => IsRecording ? Record : NoRecord;
+    }
+
+    public async void RecordClicked()
+    {
+        if (_channelPresentation.IsRecording)
+        {
+            _channelPresentation.StateString = "stopping...";
+            this.RaisePropertyChanged("StateString");
+            await Task.Delay(500);
+            IsRecording = false;
+        }
+        else
+        {
+            _channelPresentation.StateString = "starting...";
+            this.RaisePropertyChanged("StateString");
+            await Task.Delay(200);
+            IsRecording = true;
+        }
     }
 
     public ChannelPresentationViewModel(ChannelPresentation channelPresentation)

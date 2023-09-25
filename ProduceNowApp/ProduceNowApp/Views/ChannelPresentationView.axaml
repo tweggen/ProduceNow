@@ -10,11 +10,14 @@
         HorizontalAlignment="Center"
         Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
-            <Image Margin="20,0,20,0"
-                   VerticalAlignment="Center"
-                   Width="40" 
-                   Height="40"
-                   Source="{Binding RecordImage}"/>
+            <Button Command="{Binding RecordClicked}">
+                <Image
+                       Margin="20,0,20,0"
+                       VerticalAlignment="Center"
+                       Width="40" 
+                       Height="40"
+                       Source="{Binding RecordImage}"/>
+            </Button>
             <StackPanel Orientation="Vertical" VerticalAlignment="Center" >
                 <TextBlock HorizontalAlignment="Left"
                            Margin="0,10,0,0"
