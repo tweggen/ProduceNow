@@ -11,6 +11,8 @@ public class Database
         new ChannelPresentation { ShortTitle = "Studio A", IsRecording = true, StateString = "recording", Uri="avares://ProduceNowApp/Assets/StudioA.png" },
         new ChannelPresentation { ShortTitle = "Studio B", IsRecording = false, StateString = "monitoring", Uri="avares://ProduceNowApp/Assets/StudioB.png" },
     };
+
+    private Models.Settings _modelSettings = new(); 
     
     
     public IEnumerable<ChannelPresentation> GetItems() => _listChannels;
@@ -19,6 +21,11 @@ public class Database
     public void Add(ChannelPresentation modelChannelPresentation)
     {
         _listChannels.Add(modelChannelPresentation);        
+    }
+
+    public void SetSettings(Models.Settings modelSettings)
+    {
+        _modelSettings = modelSettings;
     }
     
     

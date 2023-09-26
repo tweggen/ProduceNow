@@ -45,4 +45,26 @@ public class MainViewModel : ViewModelBase
 
         Content = vm;
     }
+
+
+    public void OpenSettings()
+    {
+        var vm = new SettingsViewModel();
+
+        Observable.Merge(
+                vm.Ok,
+                vm.Cancel.Select(_ => (Models.Settings)null))
+            .Take(1)
+            .Subscribe(modelSettings =>
+            {
+                if (modelSettings != null)
+                {
+                    Database.Instance.SetSettings(modelSettings);
+                }
+
+                Content = VMRecChannels;
+            });
+
+        Content = vm;
+    }
 }

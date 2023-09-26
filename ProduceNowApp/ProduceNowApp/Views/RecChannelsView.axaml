@@ -13,7 +13,8 @@
                     Command="{Binding $parent[v:MainView].((vm:MainViewModel)DataContext).AddChannel}">
                 <ic:SymbolIcon Foreground="#777777" FontSize="30" Symbol="Add" IsFilled="True" />
             </Button>
-            <Button Background="#222222" Margin="0,0,0,10">
+            <Button Background="#222222" Margin="0,0,0,10"
+                    Command="{Binding $parent[v:MainView].((vm:MainViewModel)DataContext).OpenSettings}">
                 <ic:SymbolIcon Foreground="#777777" FontSize="30" Symbol="Settings" IsFilled="True" />
             </Button>
             <Button Background="#222222">
