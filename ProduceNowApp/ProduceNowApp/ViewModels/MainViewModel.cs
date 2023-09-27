@@ -37,7 +37,7 @@ public class MainViewModel : ViewModelBase
             {
                 if (modelChannelPresentation != null)
                 {
-                    Database.Instance.Add(modelChannelPresentation);
+                    Database.Instance.ClientConfig.Add(modelChannelPresentation);
                 }
 
                 Content = VMRecChannels;
@@ -59,7 +59,7 @@ public class MainViewModel : ViewModelBase
             {
                 if (modelSettings != null)
                 {
-                    Database.Instance.SetSettings(modelSettings);
+                    Database.Instance.ClientConfig.SetSettings(modelSettings);
                 }
 
                 Content = VMRecChannels;

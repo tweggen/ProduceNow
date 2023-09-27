@@ -1,37 +1,94 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using ProduceNowApp.Models;
+using LiteDB;
+
 
 namespace ProduceNowApp.Services;
 
 public class Database
 {
-    private List<ChannelPresentation> _listChannels = new()
+    private object _lo = new();
+    private BsonMapper _mappers;
+    private LiteDatabase _db;
+
+    private ClientConfig _clientConfig;
+    public ClientConfig ClientConfig
     {
-        new ChannelPresentation { ShortTitle = "Studio A", IsRecording = true, StateString = "recording", Uri="avares://ProduceNowApp/Assets/StudioA.png" },
-        new ChannelPresentation { ShortTitle = "Studio B", IsRecording = false, StateString = "monitoring", Uri="avares://ProduceNowApp/Assets/StudioB.png" },
-    };
-
-    private Models.Settings _modelSettings = new(); 
-    
-    
-    public IEnumerable<ChannelPresentation> GetItems() => _listChannels;
-
-
-    public void Add(ChannelPresentation modelChannelPresentation)
-    {
-        _listChannels.Add(modelChannelPresentation);        
-    }
-
-    public void SetSettings(Models.Settings modelSettings)
-    {
-        _modelSettings = modelSettings;
+        get => _clientConfig;
+        set => _clientConfig = value;
     }
     
-    
+    private BsonMapper _createMappers()
+    {
+        BsonMapper m = new();
+#if false
+        m.RegisterType(
+            vector => new BsonArray(new BsonValue[] { vector.X, vector.Y, vector.Z }),
+            value => new Vector3(
+                (float)value.AsArray[0].AsDouble,
+                (float)value.AsArray[1].AsDouble,
+                (float)value.AsArray[2].AsDouble)
+        );
+        m.RegisterType(
+            quat => new BsonArray(new BsonValue[] { quat.X, quat.Y, quat.Z, quat.W }),
+            value => new Quaternion(
+                (float)value.AsArray[0].AsDouble,
+                (float)value.AsArray[1].AsDouble,
+                (float)value.AsArray[2].AsDouble,
+                (float)value.AsArray[3].AsDouble)
+        );
+#endif
+        return m;
+    }
+
+
     private static readonly Lazy<Database> lazy =
         new Lazy<Database>(() => new Database());
 
+
+    public void _close()
+    {
+        if (null != _db)
+        {
+            _db.Commit();
+            _db.Dispose();
+            _db = null;
+        }
+    }
+    
+    
+    private void _open()
+    {
+        string path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
+        string dbname = "ProduceNowApp.db";
+
+        _db = new LiteDatabase(Path.Combine(path, dbname), _mappers);
+    }
+    
+    
+    
+    private void _writeSettings<ClientConfig>(ClientConfig clientConfig) where ClientConfig : class
+    {
+        if (clientConfig == null)
+        {
+            throw new ArgumentNullException("ClientConfig is null.");
+        }
+        var col = _db.GetCollection<ClientConfig>();
+        col.Upsert(clientConfig);
+        _db.Commit();
+    }
+
+
+
+    
+    
+    public Database()
+    {
+        _mappers = _createMappers();
+        ClientConfig = new();
+    }
     
     public static Database Instance { get { return lazy.Value; } }
 }

@@ -11,7 +11,7 @@ public class ChannelPresentationsViewModel : ViewModelBase
     public ChannelPresentationsViewModel()
     {
         Items = new();
-        foreach (var item in Database.Instance.GetItems())
+        foreach (var item in Database.Instance.ClientConfig.GetItems())
         {
             Items.Add(new ChannelPresentationViewModel(item));
         }
