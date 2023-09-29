@@ -80,8 +80,52 @@ public class Database
         _db.Commit();
     }
 
+    
+    private bool _readSettings<ClientConfig>(out ClientConfig clientConfig) where ClientConfig : class
+    {
+        bool haveIt = false;
+        clientConfig = null;
+        try
+        {
+            var col = _db.GetCollection<ClientConfig>();
+            Console.WriteLine($"Collection has {col.Count()}: {col}");
+            var allGameStates = col.FindAll();
+            ClientConfig? foundGameState = col.FindById(1);
+            if (foundGameState != null)
+            {
+                clientConfig = foundGameState;
+                haveIt = true;
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Unable to load previous clientConfig: {e}");
+        }
 
+        return haveIt;
+    }
+    
 
+    public void LoadClientConfig(out ClientConfig clientConfig)
+    {
+        clientConfig = null;
+        lock (_lo)
+        {
+            try
+            {
+                _open();
+                _readSettings(out clientConfig);
+            }
+            catch (Exception e)
+            {
+            }
+        }
+
+        if (null == clientConfig)
+        {
+            clientConfig = new();
+        }
+    }
     
     
     public Database()
