@@ -37,12 +37,17 @@ public class SettingsViewModel : ViewModelBase
             x => !string.IsNullOrWhiteSpace(x));
 
         Ok = ReactiveCommand.Create(
-            () => new Settings()
+            () =>
             {
-                ConfigUrl = ConfigUrl,
-                RabbitMqServer = RabbitMqServer,
-                MqttServer = MqttServer
+                var settings = new Settings()
+                {
+                    ConfigUrl = ConfigUrl,
+                    RabbitMqServer = RabbitMqServer,
+                    MqttServer = MqttServer
+                };
+                return settings;
             },
+            
             okEnabled);
         Cancel = ReactiveCommand.Create(() => { });
     }

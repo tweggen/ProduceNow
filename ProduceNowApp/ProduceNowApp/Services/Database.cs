@@ -66,9 +66,8 @@ public class Database
 
         _db = new LiteDatabase(Path.Combine(path, dbname), _mappers);
     }
-    
-    
-    
+
+
     private void _writeSettings<ClientConfig>(ClientConfig clientConfig) where ClientConfig : class
     {
         if (clientConfig == null)
@@ -114,10 +113,19 @@ public class Database
             try
             {
                 _open();
-                _readSettings(out clientConfig);
+                try
+                {
+                    _readSettings(out clientConfig);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Unable to read clientConfig: {e}");
+                }
+                _close();
             }
             catch (Exception e)
             {
+                Console.WriteLine($"Unable to opem/close clientConfig: {e}");
             }
         }
 
@@ -128,11 +136,36 @@ public class Database
     }
     
     
+    public void SaveGameState<ClientConfig>(ClientConfig clientConfig) where ClientConfig : class
+    {
+        lock (_lo)
+        {
+            try
+            {
+                _open();
+                try
+                {
+                    _writeSettings(clientConfig);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Unable to write clientConfig: {e}");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Unable to open/close clientConfig: {e}");
+            }
+        }
+    }
+
+    
     public Database()
     {
         _mappers = _createMappers();
         ClientConfig = new();
     }
+    
     
     public static Database Instance { get { return lazy.Value; } }
 }
