@@ -38,6 +38,7 @@ public class MainViewModel : ViewModelBase
                 if (modelChannelPresentation != null)
                 {
                     Database.Instance.ClientConfig.Add(modelChannelPresentation);
+                    Database.Instance.SaveClientConfig();
                 }
 
                 Content = VMRecChannels;

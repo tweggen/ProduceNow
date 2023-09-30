@@ -9,7 +9,7 @@ public sealed class ClientConfig
     public int Id { get; set; } = 1;
 
     
-    private List<ChannelPresentation> _listChannels;
+    private List<ChannelPresentation> _listChannels = new();
 
     
     public List<ChannelPresentation> ListChannels
@@ -19,15 +19,12 @@ public sealed class ClientConfig
     }
     
     
-    private Models.Settings _modelSettings;
+    private Models.Settings _modelSettings = new();
     public Settings Settings { 
         get => _modelSettings;
         set => _modelSettings = value; 
     }
     
-
-    public IEnumerable<ChannelPresentation> GetItems() => _listChannels;
-
 
     public void Add(ChannelPresentation modelChannelPresentation)
     {
@@ -62,23 +59,7 @@ public sealed class ClientConfig
         }
     }
 
-    
     public ClientConfig()
     {
-        _listChannels = new()
-        {
-            new ChannelPresentation
-            {
-                ShortTitle = "Studio A", IsRecording = true, StateString = "recording",
-                Uri = "avares://ProduceNowApp/Assets/StudioA.png"
-            },
-            new ChannelPresentation
-            {
-                ShortTitle = "Studio B", IsRecording = false, StateString = "monitoring",
-                Uri = "avares://ProduceNowApp/Assets/StudioB.png"
-            },
-        };
-
-        _modelSettings = new();
     }
 }
