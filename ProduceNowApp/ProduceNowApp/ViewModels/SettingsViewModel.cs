@@ -1,6 +1,7 @@
 using ReactiveUI;
 using System.Reactive;
 using ProduceNowApp.Models;
+using ProduceNowApp.Services;
 
 namespace ProduceNowApp.ViewModels;
 
@@ -27,11 +28,23 @@ public class SettingsViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _mqttServer, value);
     }
     
+    private string _debugSettings = "";
+    public string DebugSettings
+    {
+        get => _debugSettings;
+        set => this.RaiseAndSetIfChanged(ref _debugSettings, value);
+    }
+    
     public ReactiveCommand<Unit, Models.Settings> Ok { get; }
     public ReactiveCommand<Unit, Unit> Cancel { get; }
     
     public SettingsViewModel()
     {
+        ConfigUrl = Database.Instance.ClientConfig.Settings.ConfigUrl;
+        RabbitMqServer = Database.Instance.ClientConfig.Settings.RabbitMqServer;
+        MqttServer = Database.Instance.ClientConfig.Settings.MqttServer;
+        DebugSettings = Database.Instance.ClientConfig.Settings.DebugSettings;
+
         var okEnabled = this.WhenAnyValue(
             x => x.ConfigUrl,
             x => !string.IsNullOrWhiteSpace(x));
@@ -43,7 +56,8 @@ public class SettingsViewModel : ViewModelBase
                 {
                     ConfigUrl = ConfigUrl,
                     RabbitMqServer = RabbitMqServer,
-                    MqttServer = MqttServer
+                    MqttServer = MqttServer,
+                    DebugSettings = DebugSettings
                 };
                 return settings;
             },

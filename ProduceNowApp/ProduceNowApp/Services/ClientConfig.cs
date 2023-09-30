@@ -5,11 +5,26 @@ namespace ProduceNowApp.Services;
 
 public sealed class ClientConfig
 {
+    [LiteDB.BsonId]
+    public int Id { get; set; } = 1;
+
+    
     private List<ChannelPresentation> _listChannels;
 
     
+    public List<ChannelPresentation> ListChannels
+    {
+        get => _listChannels;
+        set => _listChannels = value;
+    }
+    
+    
     private Models.Settings _modelSettings;
-
+    public Settings Settings { 
+        get => _modelSettings;
+        set => _modelSettings = value; 
+    }
+    
 
     public IEnumerable<ChannelPresentation> GetItems() => _listChannels;
 

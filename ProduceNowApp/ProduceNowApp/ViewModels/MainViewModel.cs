@@ -60,6 +60,7 @@ public class MainViewModel : ViewModelBase
                 if (modelSettings != null)
                 {
                     Database.Instance.ClientConfig.SetSettings(modelSettings);
+                    Database.Instance.SaveClientConfig();
                 }
 
                 Content = VMRecChannels;

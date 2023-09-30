@@ -105,9 +105,9 @@ public class Database
     }
     
 
-    public void LoadClientConfig(out ClientConfig clientConfig)
+    public void LoadClientConfig()
     {
-        clientConfig = null;
+        ClientConfig clientConfig = null;
         lock (_lo)
         {
             try
@@ -133,10 +133,15 @@ public class Database
         {
             clientConfig = new();
         }
+
+        lock (_lo)
+        {
+            _clientConfig = clientConfig;
+        }
     }
     
     
-    public void SaveGameState<ClientConfig>(ClientConfig clientConfig) where ClientConfig : class
+    public void SaveClientConfig()
     {
         lock (_lo)
         {
@@ -145,7 +150,7 @@ public class Database
                 _open();
                 try
                 {
-                    _writeSettings(clientConfig);
+                    _writeSettings(_clientConfig);
                 }
                 catch (Exception e)
                 {
@@ -164,6 +169,7 @@ public class Database
     {
         _mappers = _createMappers();
         ClientConfig = new();
+        LoadClientConfig();
     }
     
     
