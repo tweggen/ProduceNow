@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoContent", "..\DemoContent\DemoContent.csproj", "{919F4116-BB9D-40B2-8C62-7EE92CF6AD53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,14 @@ Global
 		{7AD1DAC8-7FBE-49D5-8614-7321233DB82E}.Release|ARM64.ActiveCfg = Release|ARM64
 		{7AD1DAC8-7FBE-49D5-8614-7321233DB82E}.Release|ARM64.Build.0 = Release|ARM64
 		{7AD1DAC8-7FBE-49D5-8614-7321233DB82E}.Release|ARM64.Deploy.0 = Release|ARM64
+		{919F4116-BB9D-40B2-8C62-7EE92CF6AD53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{919F4116-BB9D-40B2-8C62-7EE92CF6AD53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{919F4116-BB9D-40B2-8C62-7EE92CF6AD53}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{919F4116-BB9D-40B2-8C62-7EE92CF6AD53}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{919F4116-BB9D-40B2-8C62-7EE92CF6AD53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{919F4116-BB9D-40B2-8C62-7EE92CF6AD53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{919F4116-BB9D-40B2-8C62-7EE92CF6AD53}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{919F4116-BB9D-40B2-8C62-7EE92CF6AD53}.Release|ARM64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
