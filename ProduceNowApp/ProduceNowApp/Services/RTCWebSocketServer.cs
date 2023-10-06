@@ -233,7 +233,7 @@ public class RTCWebSocketServer
             }
             else if (state == RTCPeerConnectionState.closed)
             {
-                await videoEP.CloseVideo();
+                await videoEncoderEndPoint.CloseVideo();
             }
         };
 
