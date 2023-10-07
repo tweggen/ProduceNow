@@ -12,8 +12,8 @@ public partial class App : Application
     
     public override void Initialize()
     {
-        System.Net.ServicePointManager.ServerCertificateValidationCallback =
-            ((sender, certificate, chain, sslPolicyErrors) => true);
+        System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+           // ((sender, certificate, chain, sslPolicyErrors) => true);
         AvaloniaXamlLoader.Load(this);
         
     }
