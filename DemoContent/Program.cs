@@ -2,6 +2,9 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using DemoContent;
+using Serilog;
+using Serilog.Extensions.Logging;
 using SIPSorcery.Media;
 using SIPSorcery.Net;
 using SIPSorceryMedia.Encoders;
@@ -9,12 +12,28 @@ using WebSocketSharp.Server;
 
 public class Program
 {
+    private static WebRTCPeer _webRtcPeer;
     private const int WEBSOCKET_PORT = 8081;
+
+    private static Microsoft.Extensions.Logging.ILogger AddConsoleLogger()
+    {
+        var serilogLogger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .MinimumLevel.Is(Serilog.Events.LogEventLevel.Debug)
+            .WriteTo.Console()
+            .CreateLogger();
+        var factory = new SerilogLoggerFactory(serilogLogger);
+        SIPSorcery.LogFactory.Set(factory);
+        return factory.CreateLogger("DemoContent");
+    }
+
 
     static void Main()
     {
-        Console.WriteLine("WebRTC Get Started");
+        AddConsoleLogger();
+        Console.WriteLine("DemoContent");
 
+        #if false 
         // Start web socket.
         Console.WriteLine("Starting web socket server...");
         var webSocketServer = new WebSocketServer(IPAddress.Any, WEBSOCKET_PORT);
@@ -24,10 +43,17 @@ public class Program
 
         Console.WriteLine($"Waiting for web socket connections on {webSocketServer.Address}:{webSocketServer.Port}...");
 
+        #endif
+        
+        
+        _webRtcPeer = new WebRTCPeer();
+        _webRtcPeer.Start();
+        
         Console.WriteLine("Press any key exit.");
         Console.ReadLine();
     }
 
+    #if false
     private static Task<RTCPeerConnection> CreatePeerConnection()
     {
         var pc = new RTCPeerConnection(null);
@@ -62,4 +88,5 @@ public class Program
 
         return Task.FromResult(pc);
     }
+#endif
 }

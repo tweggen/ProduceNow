@@ -168,7 +168,7 @@ public class RTCWebSocketServer
         _webrtcRestSignaling?.RTCPeerConnection?.Close("" /* empty reason string */);
     }
 
-    private const string REST_SIGNALING_SERVER = "https://sipsorcery.cloud/api/webrtcsignal";
+    private const string REST_SIGNALING_SERVER = "http://localhost:5245/api/WebRTCSignal"; // "https://sipsorcery.cloud/api/webrtcsignal";
     private const string REST_SIGNALING_MY_ID = "unity";
     private const string REST_SIGNALING_THEIR_ID = "svr";
     
