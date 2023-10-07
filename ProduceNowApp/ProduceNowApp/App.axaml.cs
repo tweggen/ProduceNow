@@ -8,9 +8,14 @@ namespace ProduceNowApp;
 
 public partial class App : Application
 {
+    private Services.RTCWebSocketServer _rtcWebSocketServer;
+    
     public override void Initialize()
     {
+        System.Net.ServicePointManager.ServerCertificateValidationCallback =
+            ((sender, certificate, chain, sslPolicyErrors) => true);
         AvaloniaXamlLoader.Load(this);
+        
     }
 
     public override void OnFrameworkInitializationCompleted()

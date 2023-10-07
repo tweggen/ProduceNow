@@ -8,9 +8,12 @@ using ProduceNowApp.Models;
 
 namespace ProduceNowApp.ViewModels;
 
-public class ChannelPresentationViewModel : ViewModelBase
+public class ChannelPresentationViewModel : ViewModelBase, IDisposable
 {
     private ChannelPresentation _channelPresentation;
+
+    private Services.RTCWebSocketServer _rtcWebSocketServer;
+
 
     public string ShortTitle
     {
@@ -57,11 +60,13 @@ public class ChannelPresentationViewModel : ViewModelBase
 
     private Bitmap NoRecord; 
     private Bitmap Record;
+    
 
     public Bitmap RecordImage
     {
         get => IsRecording ? Record : NoRecord;
     }
+    
 
     public async void RecordClicked()
     {
@@ -80,6 +85,13 @@ public class ChannelPresentationViewModel : ViewModelBase
             IsRecording = true;
         }
     }
+    
+
+    public void Dispose()
+    {
+        _rtcWebSocketServer.Close();
+    }
+    
 
     public ChannelPresentationViewModel(ChannelPresentation channelPresentation)
     {
@@ -87,5 +99,8 @@ public class ChannelPresentationViewModel : ViewModelBase
         MiniPicture = new Bitmap(AssetLoader.Open(new Uri(_channelPresentation.Uri)));
         NoRecord = new Bitmap(AssetLoader.Open(new Uri("avares://ProduceNowApp/Assets/NoRecord.png")));
         Record = new Bitmap(AssetLoader.Open(new Uri("avares://ProduceNowApp/Assets/Record.png")));
+        _rtcWebSocketServer = new();
+        _rtcWebSocketServer.Setup();
+        _rtcWebSocketServer.Start();
     }
 }
