@@ -116,6 +116,14 @@ public class WebRTCSignalController : ControllerBase
         [HttpPut("sdp/{from}/{to}")]
         public async Task<IActionResult> Put(string from, string to, [FromBody] RTCSessionDescriptionInit sdp)
         {
+            if (sdp != null)
+            {
+                Console.WriteLine($"sdp is {sdp}");
+            }
+            else
+            {
+                Console.WriteLine($"sdp is null.");
+            }
             if (string.IsNullOrEmpty(to) || string.IsNullOrEmpty(from) || sdp == null || sdp.sdp == null)
             {
                 _logger.LogWarning($"WebRTC signal controller PUT sdp request had invalid parameters.");
