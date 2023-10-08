@@ -80,7 +80,7 @@ public class RTCWebSocketServer
 
     private void _onVideoSinkDecodedSampleFaster(RawImage rawImage)
     {
-    
+        logger.LogDebug($"SampleFaster called.");
     }
     
     
@@ -91,6 +91,7 @@ public class RTCWebSocketServer
         int stride,
         VideoPixelFormatsEnum pixelFormat)
     {
+        logger.LogDebug($"Sample called.");
     }
     
     

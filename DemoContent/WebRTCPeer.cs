@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Logging;
 using SIPSorcery.Media;
 using SIPSorcery.Net;
+using SIPSorceryMedia.Abstractions;
+using SIPSorceryMedia.Encoders;
 
 namespace DemoContent;
 
@@ -21,6 +23,7 @@ public class WebRTCPeer
         logger = SIPSorcery.LogFactory.CreateLogger("webrtc");
 
         VideoEncoderEndPoint = new SIPSorceryMedia.Encoders.VideoEncoderEndPoint();
+        
         _cts = new CancellationTokenSource();
 
         _webrtcRestSignaling = new WebRTCRestSignalingPeer(
@@ -52,6 +55,13 @@ public class WebRTCPeer
         var testPatternSource = new VideoTestPatternSource();
         testPatternSource.SetMaxFrameRate(true);
         testPatternSource.OnVideoSourceRawSample += VideoEncoderEndPoint.ExternalVideoSourceRawSample;
+        #if false
+        testPatternSource.OnVideoSourceRawSample += delegate(uint milliseconds, int width, int height, byte[] sample,
+            VideoPixelFormatsEnum format)
+        {
+            logger.LogDebug($"Have new frame {width}x{height}");
+        };
+        #endif
         VideoEncoderEndPoint.OnVideoSourceEncodedSample += pc.SendVideo;
 
         // Add tracks.
