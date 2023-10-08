@@ -35,7 +35,7 @@ public class RTCWebSocketServer
     private const string STUN_URL = "stun:stun.sipsorcery.com";
     private const int WEBSOCKET_PORT = 8081;
 
-    private static Microsoft.Extensions.Logging.ILogger logger = NullLogger.Instance;
+    private static Microsoft.Extensions.Logging.ILogger logger = AddConsoleLogger(); // NullLogger.Instance;
 
     private RTCOptions _rtcOptions = new();
     private WebRTCRestSignalingPeer _webrtcRestSignaling;
@@ -96,6 +96,7 @@ public class RTCWebSocketServer
     
     private Task<RTCPeerConnection> CreatePeerConnection()
     {
+        logger.LogInformation("CreatePeerConnection(): Called.");
         //var videoEP = new SIPSorceryMedia.Windows.WindowsVideoEndPoint(new VpxVideoEncoder());
         //videoEP.RestrictFormats(format => format.Codec == VideoCodecsEnum.VP8);
         //var videoEP = new SIPSorceryMedia.Windows.WindowsVideoEndPoint(new FFmpegVideoEncoder());
@@ -153,6 +154,7 @@ public class RTCWebSocketServer
 
     public Task Start()
     {
+        System.Diagnostics.Debug.WriteLine("Test");
         //VideoEncoderEndPoint.OnVideoSinkDecodedSample += OnVideoFrame;
         
         _videoEP.OnVideoSinkDecodedSampleFaster += _onVideoSinkDecodedSampleFaster;
@@ -169,13 +171,13 @@ public class RTCWebSocketServer
     }
 
     private const string REST_SIGNALING_SERVER = "http://localhost:5245/api/WebRTCSignal"; // "https://sipsorcery.cloud/api/webrtcsignal";
-    private const string REST_SIGNALING_MY_ID = "unity";
-    private const string REST_SIGNALING_THEIR_ID = "svr";
+    private const string REST_SIGNALING_MY_ID = "bro";
+    private const string REST_SIGNALING_THEIR_ID = "uni";
     
     public void Setup()
     {
         
-        AddConsoleLogger();
+        // logger = AddConsoleLogger();
         _cts = new CancellationTokenSource();
         
         _videoEP = new AvaloniaVideoEndpoint(new VpxVideoEncoder());
