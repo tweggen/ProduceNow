@@ -3,6 +3,7 @@ using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Org.BouncyCastle.Tls;
 using ReactiveUI;
 using ProduceNowApp.Models;
 
@@ -51,7 +52,16 @@ public class ChannelPresentationViewModel : ViewModelBase, IDisposable
         }
     }
 
-    public Bitmap? MiniPicture { get; }
+    private Bitmap _miniPicture = null;
+    public Bitmap? MiniPicture
+    {
+        get => _miniPicture;
+        set
+        {
+            _miniPicture = value;
+            this.RaisePropertyChanged("MiniPicture");
+        }
+    }
 
 
     public string StandbyColor { get; } = "#aaaaaa";
@@ -101,6 +111,10 @@ public class ChannelPresentationViewModel : ViewModelBase, IDisposable
         Record = new Bitmap(AssetLoader.Open(new Uri("avares://ProduceNowApp/Assets/Record.png")));
         _rtcWebSocketServer = new();
         _rtcWebSocketServer.Setup();
+        _rtcWebSocketServer.OnNewBitmap += (sender, bitmap) =>
+        {
+            MiniPicture = bitmap;
+        };
         _rtcWebSocketServer.Start();
     }
 }

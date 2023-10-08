@@ -5,9 +5,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Serilog;
@@ -41,6 +45,8 @@ public class RTCWebSocketServer
     private WebRTCRestSignalingPeer _webrtcRestSignaling;
     private AvaloniaVideoEndpoint _videoEP;
     private CancellationTokenSource _cts;
+    
+    public EventHandler<Bitmap> OnNewBitmap;
 
     private static Microsoft.Extensions.Logging.ILogger AddConsoleLogger()
     {
@@ -84,6 +90,29 @@ public class RTCWebSocketServer
     }
     
     
+    private static WriteableBitmap CreateBitmapFromPixelData( 
+        byte[] bgraPixelData, 
+        uint pixelWidth, 
+        uint pixelHeight) 
+    { 
+        // Standard may need to change on some devices 
+        Vector dpi = new Vector(96, 96); 
+  
+        var bitmap = new WriteableBitmap( 
+            new PixelSize((int)pixelWidth, (int)pixelHeight), 
+            dpi, 
+            PixelFormat.Bgra8888, 
+            AlphaFormat.Premul); 
+  
+        using (var frameBuffer = bitmap.Lock()) 
+        { 
+            Marshal.Copy(
+                bgraPixelData, 0, frameBuffer.Address, bgraPixelData.Length); 
+        } 
+  
+        return bitmap; 
+    } 
+
     private void _onVideoSinkDecodedSample(
         byte[] sample,
         uint width,
@@ -91,7 +120,9 @@ public class RTCWebSocketServer
         int stride,
         VideoPixelFormatsEnum pixelFormat)
     {
-        logger.LogDebug($"Sample called.");
+
+        WriteableBitmap bitmap = CreateBitmapFromPixelData(sample, width, height);
+        OnNewBitmap?.Invoke(this, bitmap);
     }
     
     
