@@ -53,6 +53,7 @@ public class WebRTCPeer
         //AudioExtrasSource audioSrc = new AudioExtrasSource(new AudioEncoder(), new AudioSourceOptions { AudioSource = AudioSourcesEnum.None });
         //audioSrc.OnAudioSourceEncodedSample += pc.SendAudio;
         var testPatternSource = new VideoTestPatternSource();
+        
         testPatternSource.SetMaxFrameRate(true);
         testPatternSource.OnVideoSourceRawSample += VideoEncoderEndPoint.ExternalVideoSourceRawSample;
         #if false

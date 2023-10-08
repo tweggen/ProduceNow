@@ -47,7 +47,7 @@ public class AvaloniaVideoEndpoint : IVideoSink
         {
             try
             {
-                foreach (var decoded in _videoDecoder.DecodeVideo(frame, VideoPixelFormatsEnum.Bgr, format.Codec))
+                foreach (var decoded in _videoDecoder.DecodeVideo(frame, VideoPixelFormatsEnum.Bgra, format.Codec))
                 {
                     OnVideoSinkDecodedSample(decoded.Sample, decoded.Width, decoded.Height, (int)(decoded.Width * 3),
                         VideoPixelFormatsEnum.Bgr);

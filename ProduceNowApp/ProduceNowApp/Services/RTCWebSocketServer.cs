@@ -93,10 +93,28 @@ public class RTCWebSocketServer
     private static WriteableBitmap CreateBitmapFromPixelData( 
         byte[] bgraPixelData, 
         uint pixelWidth, 
-        uint pixelHeight) 
+        uint pixelHeight,
+        int stride,
+        VideoPixelFormatsEnum pixFormat) 
     { 
         // Standard may need to change on some devices 
-        Vector dpi = new Vector(96, 96); 
+        Vector dpi = new Vector(96, 96);
+        PixelFormat avPixFormat;
+        switch (pixFormat)
+        {
+            case VideoPixelFormatsEnum.Bgr:
+                avPixFormat = PixelFormat.Bgra8888;
+                break;
+            default:
+            case VideoPixelFormatsEnum.NV12:
+            case VideoPixelFormatsEnum.Bgra:
+                avPixFormat = PixelFormat.Bgra8888;
+                break;
+            case VideoPixelFormatsEnum.I420:
+            case VideoPixelFormatsEnum.Rgb:
+                avPixFormat = PixelFormat.Rgba8888;
+                break;
+        }
   
         var bitmap = new WriteableBitmap( 
             new PixelSize((int)pixelWidth, (int)pixelHeight), 
@@ -104,10 +122,26 @@ public class RTCWebSocketServer
             PixelFormat.Bgra8888, 
             AlphaFormat.Premul); 
   
-        using (var frameBuffer = bitmap.Lock()) 
-        { 
-            Marshal.Copy(
-                bgraPixelData, 0, frameBuffer.Address, bgraPixelData.Length); 
+        using (var frameBuffer = bitmap.Lock())
+        {
+            for (int y = 0; y < pixelHeight; ++y)
+            {
+                //Span<byte> pixelRowSpan = bgraPixelData.AsSpan(y * stride);
+                IntPtr pixelRowPtr = frameBuffer.Address + y * frameBuffer.RowBytes;
+                
+                for (int x = 0; x < pixelWidth; x++)
+                {
+                    byte[] rgbaPixel =
+                    {
+                        bgraPixelData[y*stride+x*3+0], 
+                        bgraPixelData[y*stride+x*3+1], 
+                        bgraPixelData[y*stride+x*3+2], 255
+                    };
+                    Marshal.Copy(rgbaPixel, 0, pixelRowPtr + x * 4, 4);
+                }
+            }
+            //Marshal.Copy(
+            //    bgraPixelData, 0, frameBuffer.Address, bgraPixelData.Length); 
         } 
   
         return bitmap; 
@@ -121,7 +155,7 @@ public class RTCWebSocketServer
         VideoPixelFormatsEnum pixelFormat)
     {
 
-        WriteableBitmap bitmap = CreateBitmapFromPixelData(sample, width, height);
+        WriteableBitmap bitmap = CreateBitmapFromPixelData(sample, width, height, stride, pixelFormat);
         OnNewBitmap?.Invoke(this, bitmap);
     }
     
