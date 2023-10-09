@@ -6,6 +6,7 @@ using Avalonia.Platform;
 using Org.BouncyCastle.Tls;
 using ReactiveUI;
 using ProduceNowApp.Models;
+using ProduceNowApp.Services;
 
 namespace ProduceNowApp.ViewModels;
 
@@ -14,7 +15,6 @@ public class ChannelPresentationViewModel : ViewModelBase, IDisposable
     private ChannelPresentation _channelPresentation;
 
     private Services.RTCWebSocketServer _rtcWebSocketServer;
-
 
     public string ShortTitle
     {
@@ -103,14 +103,15 @@ public class ChannelPresentationViewModel : ViewModelBase, IDisposable
     }
     
 
-    public ChannelPresentationViewModel(ChannelPresentation channelPresentation)
+    public ChannelPresentationViewModel(
+        ChannelPresentation channelPresentation)
     {
         _channelPresentation = channelPresentation;
         MiniPicture = new Bitmap(AssetLoader.Open(new Uri(_channelPresentation.Uri)));
         NoRecord = new Bitmap(AssetLoader.Open(new Uri("avares://ProduceNowApp/Assets/NoRecord.png")));
         Record = new Bitmap(AssetLoader.Open(new Uri("avares://ProduceNowApp/Assets/Record.png")));
         _rtcWebSocketServer = new();
-        _rtcWebSocketServer.Setup();
+        _rtcWebSocketServer.Setup(Database.Instance.ClientConfig.Settings.ConfigUrl);
         _rtcWebSocketServer.OnNewBitmap += (sender, bitmap) =>
         {
             MiniPicture = bitmap;

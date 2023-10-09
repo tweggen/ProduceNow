@@ -1,9 +1,8 @@
-#if true
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
@@ -42,7 +41,7 @@ public class RTCWebSocketServer
     private static Microsoft.Extensions.Logging.ILogger logger = AddConsoleLogger(); // NullLogger.Instance;
 
     private RTCOptions _rtcOptions = new();
-    private WebRTCRestSignalingPeer _webrtcRestSignaling;
+    private WebRTCRestSignalingPeer? _webrtcRestSignaling = null;
     private AvaloniaVideoEndpoint _videoEP;
     private CancellationTokenSource _cts;
     
@@ -220,13 +219,17 @@ public class RTCWebSocketServer
 
     public Task Start()
     {
-        System.Diagnostics.Debug.WriteLine("Test");
-        //VideoEncoderEndPoint.OnVideoSinkDecodedSample += OnVideoFrame;
-        
         _videoEP.OnVideoSinkDecodedSampleFaster += _onVideoSinkDecodedSampleFaster;
         _videoEP.OnVideoSinkDecodedSample += _onVideoSinkDecodedSample;
 
-        return _webrtcRestSignaling.Start(_cts);
+        if (_webrtcRestSignaling != null)
+        {
+            return _webrtcRestSignaling.Start(_cts);
+        }
+        else
+        {
+            return Task.CompletedTask;
+        }
     }
 
 
@@ -240,7 +243,7 @@ public class RTCWebSocketServer
     private const string REST_SIGNALING_MY_ID = "bro";
     private const string REST_SIGNALING_THEIR_ID = "uni";
     
-    public void Setup()
+    public void Setup(string strServerUrl)
     {
         
         // logger = AddConsoleLogger();
@@ -248,14 +251,20 @@ public class RTCWebSocketServer
         
         _videoEP = new AvaloniaVideoEndpoint(new VpxVideoEncoder());
         _videoEP.RestrictFormats(format => format.Codec == VideoCodecsEnum.VP8);
-
-        _webrtcRestSignaling = new WebRTCRestSignalingPeer(
-            REST_SIGNALING_SERVER,
-            REST_SIGNALING_MY_ID,
-            REST_SIGNALING_THEIR_ID,
-            this.CreatePeerConnection);
+        
+        try
+        {
+            _webrtcRestSignaling = new WebRTCRestSignalingPeer(
+                strServerUrl + "/api/WebRTCSignal",
+                REST_SIGNALING_MY_ID,
+                REST_SIGNALING_THEIR_ID,
+                this.CreatePeerConnection);
+        }
+        catch (Exception e)
+        {
+            _webrtcRestSignaling = null;
+        }
 
     }
 
 }
-#endif
