@@ -4,6 +4,8 @@ using DemoSignalServer.Models;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Extensions.Logging;
+using WindowsFirewallHelper;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

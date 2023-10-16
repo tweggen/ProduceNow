@@ -9,12 +9,14 @@ using SIPSorcery.Media;
 using SIPSorcery.Net;
 using SIPSorceryMedia.Encoders;
 using WebSocketSharp.Server;
+using WindowsFirewallHelper;
 
 public class Program
 {
     private static WebRTCPeer _webRtcPeer;
     private const int WEBSOCKET_PORT = 8081;
 
+    
     private static Microsoft.Extensions.Logging.ILogger AddConsoleLogger()
     {
         var serilogLogger = new LoggerConfiguration()
@@ -52,6 +54,7 @@ public class Program
         Console.WriteLine("Press any key exit.");
         Console.ReadLine();
     }
+    
 
     #if false
     private static Task<RTCPeerConnection> CreatePeerConnection()

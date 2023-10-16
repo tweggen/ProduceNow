@@ -13,6 +13,12 @@ public class WebRTCSignalController : ControllerBase
         private readonly IConfiguration _config;
         private readonly ILogger<WebRTCSignalController> _logger;
 
+        public int SdpSignallingTimeoutMs
+        {
+            get;
+            set;
+        } = 5000;
+        
         public WebRTCSignalController(
             Models.RTCSignalContext context,
             IConfiguration config,
@@ -67,6 +73,12 @@ public class WebRTCSignalController : ControllerBase
             {
                 return BadRequest();
             }
+            
+            /*
+             * Expire the timed out clients
+             * TXWTODO: This concept is flawed, we should not rely on polling timeouts.
+             */
+            await ExpireTimedout();
 
             var query = _context.WebRTCSignals.Where(x =>
                 x.To.ToLower() == to.ToLower() &&
@@ -210,6 +222,24 @@ public class WebRTCSignalController : ControllerBase
                 (from.ToLower() == x.From.ToLower() && to.ToLower() == x.To.ToLower()) ||
                  (to.ToLower() == x.From.ToLower() && from.ToLower() == x.To.ToLower()))
                .ToArrayAsync();
+
+            if (existing?.Length > 0)
+            {
+                _context.RemoveRange(existing);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
+        ///  Remove everything with an age older than
+        /// </summary>
+        private async Task ExpireTimedout()
+        {
+            DateTime oldest = DateTime.Now - TimeSpan.FromMilliseconds(SdpSignallingTimeoutMs);
+            
+            var existing = await _context.WebRTCSignals.Where(x =>
+                    (DateTime.Parse(x.Inserted) < oldest))
+                .ToArrayAsync();
 
             if (existing?.Length > 0)
             {

@@ -13,6 +13,7 @@
       <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
       <PackageReference Include="SIPSorcery" Version="6.0.12" />
       <PackageReference Include="SIPSorceryMedia.Encoders" Version="0.0.12-pre" />
+      <PackageReference Include="WindowsFirewallHelper" Version="2.2.0.86" />
     </ItemGroup>
 
 </Project>
