@@ -144,7 +144,7 @@ public class WebRTCSignalController : ControllerBase
 
             if (sdp.type == RTCSdpType.offer)
             {
-                await ExpireExisting(from, to);
+               //  await ExpireExisting(from, to);
             }
 
             Models.WebRTCSignal sdpSignal = new Models.WebRTCSignal
