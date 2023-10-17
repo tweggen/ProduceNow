@@ -166,14 +166,24 @@ public class RTCWebSocketServer
         //videoEP.RestrictFormats(format => format.Codec == VideoCodecsEnum.VP8);
         //var videoEP = new SIPSorceryMedia.Windows.WindowsVideoEndPoint(new FFmpegVideoEncoder());
         //videoEP.RestrictFormats(format => format.Codec == VideoCodecsEnum.H264);
-        RTCConfiguration config = new RTCConfiguration
+        
+        RTCPeerConnection pc = null;
+        try
         {
-            //iceServers = new List<RTCIceServer> { new RTCIceServer { urls = STUN_URL } }
-            X_UseRtpFeedbackProfile = true
-        };
-        var pc = new RTCPeerConnection(config);
-        
-        
+            RTCConfiguration config = new RTCConfiguration
+            {
+                //iceServers = new List<RTCIceServer> { new RTCIceServer { urls = STUN_URL } }
+                X_UseRtpFeedbackProfile = true,
+                X_BindAddress = IPAddress.Any
+            };
+            pc = new RTCPeerConnection(config);
+        }
+        catch (Exception e)
+        {
+            logger.LogError($"Caught exception {e}.");
+        }
+
+
         // Add local receive only tracks. This ensures that the SDP answer includes only the codecs we support.
         if (!_rtcOptions.NoAudio)
         {

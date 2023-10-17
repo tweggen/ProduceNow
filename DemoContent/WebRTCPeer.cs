@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.Extensions.Logging;
 using SIPSorcery.Media;
 using SIPSorcery.Net;
@@ -47,7 +48,10 @@ public class WebRTCPeer
 
     private Task<SIPSorcery.Net.RTCPeerConnection> CreatePeerConnection()
     {
-        var pc = new SIPSorcery.Net.RTCPeerConnection(null);
+        var pc = new SIPSorcery.Net.RTCPeerConnection(new RTCConfiguration()
+        {
+            X_BindAddress = IPAddress.Any
+        });
 
         // Set up sources and hook up send events to peer connection.
         //AudioExtrasSource audioSrc = new AudioExtrasSource(new AudioEncoder(), new AudioSourceOptions { AudioSource = AudioSourcesEnum.None });
@@ -56,6 +60,7 @@ public class WebRTCPeer
         
         testPatternSource.SetMaxFrameRate(true);
         testPatternSource.OnVideoSourceRawSample += VideoEncoderEndPoint.ExternalVideoSourceRawSample;
+        
         #if false
         testPatternSource.OnVideoSourceRawSample += delegate(uint milliseconds, int width, int height, byte[] sample,
             VideoPixelFormatsEnum format)

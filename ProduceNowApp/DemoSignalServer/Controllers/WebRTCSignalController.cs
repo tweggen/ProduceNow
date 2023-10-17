@@ -78,7 +78,7 @@ public class WebRTCSignalController : ControllerBase
              * Expire the timed out clients
              * TXWTODO: This concept is flawed, we should not rely on polling timeouts.
              */
-            await ExpireTimedout();
+            // await ExpireTimedout();
 
             var query = _context.WebRTCSignals.Where(x =>
                 x.To.ToLower() == to.ToLower() &&
@@ -144,7 +144,7 @@ public class WebRTCSignalController : ControllerBase
 
             if (sdp.type == RTCSdpType.offer)
             {
-               //  await ExpireExisting(from, to);
+               await ExpireExisting(from, to);
             }
 
             Models.WebRTCSignal sdpSignal = new Models.WebRTCSignal
