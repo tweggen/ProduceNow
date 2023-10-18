@@ -3,8 +3,12 @@ using Android.Content.PM;
 using Avalonia;
 using Avalonia.Android;
 using Avalonia.ReactiveUI;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Extensions.Logging;
 
 namespace ProduceNowApp.Android;
+
 
 [Activity(
     Label = "ProduceNow",
@@ -15,9 +19,11 @@ namespace ProduceNowApp.Android;
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
 public class MainActivity : AvaloniaMainActivity<App>
 {
+
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
         return base.CustomizeAppBuilder(builder)
+            .LogToTrace()
             .WithInterFont()
             .UseReactiveUI();
     }

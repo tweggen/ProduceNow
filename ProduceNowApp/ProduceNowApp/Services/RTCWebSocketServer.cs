@@ -1,20 +1,26 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Media.Imaging;
+using Avalonia.Media.Transformation;
 using Avalonia.Platform;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging.Abstractions;
-using Serilog;
-using Serilog.Extensions.Logging;
+using Org.BouncyCastle.X509;
+// using Serilog;
+// using Serilog.Events;
+// using Serilog.Extensions.Logging;
 using SIPSorcery.Media;
 using SIPSorcery.Net;
 using SIPSorcery.Sys;
@@ -32,7 +38,6 @@ public class RTCOptions
     public bool NoAudio { get; set; }
 }
 
-
 public class RTCWebSocketServer
 {
     private const string STUN_URL = "stun:stun.sipsorcery.com";
@@ -47,18 +52,52 @@ public class RTCWebSocketServer
     
     public EventHandler<Bitmap> OnNewBitmap;
 
+
     private static Microsoft.Extensions.Logging.ILogger AddConsoleLogger()
     {
+        var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(
+            builder => builder.AddConsole());
+        var logger = loggerFactory.CreateLogger("ProduceNow");
+        SIPSorcery.LogFactory.Set(loggerFactory);
+        return logger;
+
+#if false
         var serilogLogger = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .MinimumLevel.Is(Serilog.Events.LogEventLevel.Debug)
-            .WriteTo.Console()
+            .WriteTo.Console(LogEventLevel.Verbose)
             .CreateLogger();
         var factory = new SerilogLoggerFactory(serilogLogger);
         SIPSorcery.LogFactory.Set(factory);
-        return factory.CreateLogger<RTCWebSocketServer>();
+        return factory.CreateLogger<App>();
+#endif
     }
 
+
+    static private string cert =
+        "MIIDjDCCAnSgAwIBAgIEN0KUPTANBgkqhkiG9w0BAQsFADBbMScwJQYDVQQDDB5SZWdlcnkgU2Vs"+
+        "Zi1TaWduZWQgQ2VydGlmaWNhdGUxIzAhBgNVBAoMGlJlZ2VyeSwgaHR0cHM6Ly9yZWdlcnkuY29t"+
+        "MQswCQYDVQQGEwJVQTAgFw0yMzEwMTgwMDAwMDBaGA8yMTIzMTAxODE2MjA1MVowTjEaMBgGA1UE"+
+        "AwwRbmFzc2F1LXJlY29yZHMuZGUxIzAhBgNVBAoMGlJlZ2VyeSwgaHR0cHM6Ly9yZWdlcnkuY29t"+
+        "MQswCQYDVQQGEwJVQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANIqQ7Dx3+icIE8K"+
+        "VvXBikBCrOMEAnfoncXoCYfvkYa/tNPdsKkIgeCgvDaaQHaN6Lu5TLhxXO8I9Nsc/XuRF2TyY5id"+
+        "fYSqU8eha8Vq4PBSWzTG7pTxgsBq8a3POpu1JgxyUAD7EKdbTufkDiAAf3+7s1MUfgmJqY5+E3G/"+
+        "Xk5uYX2d02RYXyNMKBOQZB3HINH7DTZoqMCUzhGbkbHHf6I8q/optTnbMKDoEdyXyrIfRH6W75pm"+
+        "xtcMxLp5H6aV/6I9xrnIH5g4BNQ0JhEB49JDqOMfZgv9cX8P0Oze7gEpNkD578iVuyiD+w5Aq2gM"+
+        "h+GKftwqHz2J1KJsD6DSGXsCAwEAAaNjMGEwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMC"+
+        "AYYwHQYDVR0OBBYEFFFmL53VM+4Fc4KJjQCMvK07A2EDMB8GA1UdIwQYMBaAFFFmL53VM+4Fc4KJ"+
+        "jQCMvK07A2EDMA0GCSqGSIb3DQEBCwUAA4IBAQALeZnl8om/N3UuREW8onQZ2J1OsOSZHYl55UIG"+
+        "wo1HppHhQG+A9iTM4o8WC4Tdh5qGNEkQHWjgnxGQIOB++ukB+hlpDHw7atCtQoUwVb1KF8g5WmlR"+
+        "lhKlNxtZbLIOWFySOIQvK5jLhoURftDK+vEzT1xfg+1CCkCKt10l9dn7OMqUqWvTVY0uuvcvMYbK"+
+        "DYIC6lepRSeQdUrkbGA9bNjz7kYA4n8omklNpRbSL744kKIgAww2UsXFVOO5pP6tWSFLKRFmowFE"+
+        "3ZUEjvOG4h1ZHzxhlYSfjeqQC30HZkrmTfgbvYFCKMYO/rEDd2ggHVR8AdFWjLkOhGtavuiTl6a5"
+        ;
+
+    private X509Certificate2 GetCertificate()
+    {
+        return new X509Certificate2(Encoding.ASCII.GetBytes(cert));
+    }
+        #if false
     private static X509Certificate2 LoadCertificate(string path)
     {
         if (!File.Exists(path))
@@ -82,6 +121,7 @@ public class RTCWebSocketServer
             return cert;
         }
     }
+#endif
 
     private void _onVideoSinkDecodedSampleFaster(RawImage rawImage)
     {
@@ -170,6 +210,7 @@ public class RTCWebSocketServer
         RTCPeerConnection pc = null;
         try
         {
+            
             RTCConfiguration config = new RTCConfiguration
             {
                 //iceServers = new List<RTCIceServer> { new RTCIceServer { urls = STUN_URL } }
@@ -223,7 +264,7 @@ public class RTCWebSocketServer
         pc.GetRtpChannel().OnStunMessageSent += (msg, ep, isRelay) => logger.LogDebug($"SEND STUN {msg.Header.MessageType} (txid: {msg.Header.TransactionId.HexStr()}) to {ep}.");
         pc.oniceconnectionstatechange += (state) => logger.LogDebug($"ICE connection state change to {state}.");
 
-        return Task.FromResult(pc);
+         return Task.FromResult(pc);
     }
 
 
@@ -258,6 +299,9 @@ public class RTCWebSocketServer
         
         // logger = AddConsoleLogger();
         _cts = new CancellationTokenSource();
+        logger.LogError("Serilog: gravi off navi on!");
+        Console.WriteLine("Console: gravi off navi on!");
+        Debug.WriteLine("Debug: gravi off navi on!");
         
         _videoEP = new AvaloniaVideoEndpoint(new VpxVideoEncoder());
         _videoEP.RestrictFormats(format => format.Codec == VideoCodecsEnum.VP8);
