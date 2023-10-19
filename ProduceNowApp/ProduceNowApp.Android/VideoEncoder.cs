@@ -152,6 +152,13 @@ public class VideoEncoder : IVideoEncoder
             {
                 _mediaOutputBuffers = _mediaCodec.GetOutputBuffers();
             }
+            else
+            {
+                if (sawInputEOS || !haveMoreInput)
+                {
+                    break;
+                }
+            }
 
         }
 
