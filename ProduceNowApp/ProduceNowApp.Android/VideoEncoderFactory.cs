@@ -7,6 +7,6 @@ public class VideoEncoderFactory : IVideoEncoderFactory
 {
     public IVideoEncoder CreateVideoEncoder()
     {
-        throw new System.NotImplementedException();
+        return new VideoEncoder();
     }
 }
