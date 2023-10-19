@@ -95,9 +95,10 @@ public class VideoEncoder : IVideoEncoder
         _needVideoDecoder();
         bool sawOutputEOS = false;
         bool sawInputEOS = false;
+        bool haveMoreInput = true;
         while (!sawOutputEOS)
         {
-            if (!sawInputEOS)
+            if (!sawInputEOS && haveMoreInput)
             {
                 int inputBufIndex = _mediaCodec.DequeueInputBuffer(DefaultTimeoutUs);
                 if (inputBufIndex >= 0)
@@ -105,6 +106,7 @@ public class VideoEncoder : IVideoEncoder
                     _mediaInputBuffers[inputBufIndex].Clear();
                     _mediaInputBuffers[inputBufIndex].Put(encodedSample);
                     _mediaInputBuffers[inputBufIndex].Rewind();
+                    haveMoreInput = false;
                     Console.WriteLine($"Decoding frameIndex {_mediaFrameIndex}");
                     try
                     {
@@ -123,29 +125,34 @@ public class VideoEncoder : IVideoEncoder
 
                     _mediaFrameIndex++;
                 }
-                int result = _mediaCodec.DequeueOutputBuffer(_mediaBufferInfo, DefaultTimeoutUs);
-                if (result >= 0) {
-                    int outputBufIndex = result;
-                    var outputBuffer = _mediaOutputBuffers[outputBufIndex];
-                    if (outputBuffer != null)
-                    {
-                        byte[] outputBytes = new byte[outputBuffer.Capacity()];
-                        outputBuffer.Get(outputBytes);
-                        listFrames.Add(new()
-                        {
-                            Width = 640, Height = 480, Sample = outputBytes
-                        });
-                        if ((_mediaBufferInfo.Flags & MediaCodecBufferFlags.EndOfStream) != 0)
-                        {
-                            sawOutputEOS = true;
-                        }
+            }
 
-                        _mediaCodec.ReleaseOutputBuffer(outputBufIndex, false);
+            int result = _mediaCodec.DequeueOutputBuffer(_mediaBufferInfo, DefaultTimeoutUs);
+            if (result >= 0)
+            {
+                int outputBufIndex = result;
+                var outputBuffer = _mediaOutputBuffers[outputBufIndex];
+                if (outputBuffer != null)
+                {
+                    byte[] outputBytes = new byte[outputBuffer.Capacity()];
+                    outputBuffer.Get(outputBytes);
+                    listFrames.Add(new()
+                    {
+                        Width = 640, Height = 480, Sample = outputBytes
+                    });
+                    if ((_mediaBufferInfo.Flags & MediaCodecBufferFlags.EndOfStream) != 0)
+                    {
+                        sawOutputEOS = true;
                     }
-                } else if (result == (int)MediaCodecInfoState.OutputBuffersChanged) {
-                    _mediaOutputBuffers = _mediaCodec.GetOutputBuffers();
+
+                    _mediaCodec.ReleaseOutputBuffer(outputBufIndex, false);
                 }
             }
+            else if (result == (int)MediaCodecInfoState.OutputBuffersChanged)
+            {
+                _mediaOutputBuffers = _mediaCodec.GetOutputBuffers();
+            }
+
         }
 
         return listFrames;
