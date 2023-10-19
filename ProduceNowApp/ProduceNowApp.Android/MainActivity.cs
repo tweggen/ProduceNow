@@ -19,6 +19,8 @@ namespace ProduceNowApp.Android;
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
 public class MainActivity : AvaloniaMainActivity<App>
 {
+    private object _lo = new();
+    static private AndroidBootstrapper _androidBootstrapper = new(Splat.Locator.CurrentMutable, Splat.Locator.Current);        
 
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {

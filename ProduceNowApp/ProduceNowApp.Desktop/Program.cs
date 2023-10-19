@@ -12,10 +12,11 @@ class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        DesktopBootstrapper db = new(Splat.Locator.CurrentMutable, Splat.Locator.Current);
         BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);  
     } 
-
+    
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder
@@ -23,6 +24,5 @@ class Program
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace()
-
             .UseReactiveUI();
 }

@@ -26,6 +26,7 @@ using SIPSorcery.Net;
 using SIPSorcery.Sys;
 using SIPSorceryMedia.Abstractions;
 using SIPSorceryMedia.Encoders;
+using Splat;
 using WebSocketSharp.Server;
 
 namespace ProduceNowApp.Services;
@@ -290,7 +291,6 @@ public class RTCWebSocketServer
         _webrtcRestSignaling?.RTCPeerConnection?.Close("" /* empty reason string */);
     }
 
-    private const string REST_SIGNALING_SERVER = "http://localhost:5245/api/WebRTCSignal"; // "https://sipsorcery.cloud/api/webrtcsignal";
     private const string REST_SIGNALING_MY_ID = "bro";
     private const string REST_SIGNALING_THEIR_ID = "uni";
     
@@ -302,8 +302,10 @@ public class RTCWebSocketServer
         logger.LogError("Serilog: gravi off navi on!");
         Console.WriteLine("Console: gravi off navi on!");
         Debug.WriteLine("Debug: gravi off navi on!");
-        
-        _videoEP = new AvaloniaVideoEndpoint(new VpxVideoEncoder());
+
+        var videoEncoderFactory = Splat.Locator.Current.GetService<IVideoEncoderFactory>();
+        var videoEncoder = videoEncoderFactory.CreateVideoEncoder();
+        _videoEP = new AvaloniaVideoEndpoint(videoEncoder);
         _videoEP.RestrictFormats(format => format.Codec == VideoCodecsEnum.VP8);
         
         try
