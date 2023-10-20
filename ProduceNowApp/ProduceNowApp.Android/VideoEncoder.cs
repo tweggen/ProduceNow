@@ -77,6 +77,7 @@ public class VideoEncoder : IVideoEncoder
                 _mediaCodec = MediaCodec.CreateDecoderByType(MimeVp8);
                 _mediaFormat = MediaFormat.CreateVideoFormat(MimeVp8, 640, 480);
                 _mediaCodec.Configure(_mediaFormat, null, null, 0);
+                _mediaCodec.SetParameter(MediaCodec.ParameterKeyLowLatency);
                 _mediaCodec.Start();
                 _mediaBufferInfo = new();
                 _mediaFrameIndex = 0;
@@ -96,6 +97,7 @@ public class VideoEncoder : IVideoEncoder
         bool sawOutputEOS = false;
         bool sawInputEOS = false;
         bool haveMoreInput = true;
+        Console.WriteLine($"Decode media is called.");
         while (!sawOutputEOS)
         {
             if (!sawInputEOS && haveMoreInput)
@@ -117,6 +119,7 @@ public class VideoEncoder : IVideoEncoder
                             _mediaFrameIndex,
                             sawInputEOS ? MediaCodecBufferFlags.EndOfStream : 0
                         );
+                        Console.WriteLine($"successfully enqueued.");
                     }
                     catch (Exception e)
                     {
@@ -128,12 +131,14 @@ public class VideoEncoder : IVideoEncoder
             }
 
             int result = _mediaCodec.DequeueOutputBuffer(_mediaBufferInfo, DefaultTimeoutUs);
+            Console.WriteLine($"result is {result}.");
             if (result >= 0)
             {
                 int outputBufIndex = result;
                 var outputBuffer = _mediaOutputBuffers[outputBufIndex];
                 if (outputBuffer != null)
                 {
+                    Console.WriteLine($"Have output buffer.");
                     byte[] outputBytes = new byte[outputBuffer.Capacity()];
                     outputBuffer.Get(outputBytes);
                     listFrames.Add(new()
