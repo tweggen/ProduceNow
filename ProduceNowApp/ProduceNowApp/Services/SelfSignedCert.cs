@@ -7,6 +7,7 @@ namespace ProduceNowApp.Services;
 public class SelfSignedCert
 {
     public RTCCertificate2 RtcCertificate2;
+    
     private SelfSignedCert()
     {
         Console.WriteLine("Generating self signed certificate...");
