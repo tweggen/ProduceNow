@@ -77,7 +77,7 @@ public class VideoEncoder : IVideoEncoder
                 _mediaCodec = MediaCodec.CreateDecoderByType(MimeVp8);
                 _mediaFormat = MediaFormat.CreateVideoFormat(MimeVp8, 640, 480);
                 _mediaCodec.Configure(_mediaFormat, null, null, 0);
-                _mediaCodec.SetParameter(MediaCodec.ParameterKeyLowLatency);
+                //_mediaCodec.SetParameter(MediaCodec.ParameterKeyLowLatency);
                 _mediaCodec.Start();
                 _mediaBufferInfo = new();
                 _mediaFrameIndex = 0;
