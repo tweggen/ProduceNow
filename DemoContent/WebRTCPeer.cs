@@ -1,4 +1,5 @@
 using System.Net;
+using System.Xml;
 using Microsoft.Extensions.Logging;
 using SIPSorcery.Media;
 using SIPSorcery.Net;
@@ -7,67 +8,44 @@ using SIPSorceryMedia.Encoders;
 
 namespace DemoContent;
 
-public class WebRTCPeer
+public class WebRTCPeer : IDisposable
 {
     private const string REST_SIGNALING_SERVER =  "http://localhost:5245/api/WebRTCSignal"; // "http://localhost:5245/api/WebRTCSignal"; // "https://sipsorcery.cloud/api/webrtcsignal";
     private const string REST_SIGNALING_MY_ID = "uni";
     private const string REST_SIGNALING_THEIR_ID = "bro";
 
-    private static Microsoft.Extensions.Logging.ILogger logger;
+    private static ILogger logger;
 
+    private bool _isClosed = false;
+    
     private WebRTCRestSignalingPeer _webrtcRestSignaling;
-    public SIPSorceryMedia.Encoders.VideoEncoderEndPoint VideoEncoderEndPoint { get; }
+    public VideoEncoderEndPoint VideoEncoderEndPoint { get; }
     private CancellationTokenSource _cts;
 
-    public WebRTCPeer()
-    {
-        logger = SIPSorcery.LogFactory.CreateLogger("webrtc");
+    public delegate void OnCloseHandler(string reason);
+    public event OnCloseHandler OnClose;
 
-        VideoEncoderEndPoint = new SIPSorceryMedia.Encoders.VideoEncoderEndPoint();
-        
-        _cts = new CancellationTokenSource();
 
-        _webrtcRestSignaling = new WebRTCRestSignalingPeer(
-            REST_SIGNALING_SERVER,
-            REST_SIGNALING_MY_ID,
-            REST_SIGNALING_THEIR_ID,
-            this.CreatePeerConnection);
-    }
-
-    public Task Start()
-    {
-        return _webrtcRestSignaling.Start(_cts);
-        //return Task.CompletedTask;
-    }
-
-    public void Close(string reason)
-    {
-        _cts.Cancel();
-        _webrtcRestSignaling?.RTCPeerConnection?.Close(reason);
-    }
-
+    public RTCCertificate2 RtcCertificate2;
+    
+    
     private Task<SIPSorcery.Net.RTCPeerConnection> CreatePeerConnection()
     {
         var pc = new SIPSorcery.Net.RTCPeerConnection(new RTCConfiguration()
         {
-            X_BindAddress = IPAddress.Any
+            X_BindAddress = IPAddress.Any,
+            certificates2 = new List<RTCCertificate2>() { this.RtcCertificate2 }
         });
 
         // Set up sources and hook up send events to peer connection.
         //AudioExtrasSource audioSrc = new AudioExtrasSource(new AudioEncoder(), new AudioSourceOptions { AudioSource = AudioSourcesEnum.None });
         //audioSrc.OnAudioSourceEncodedSample += pc.SendAudio;
+
         var testPatternSource = new VideoTestPatternSource();
         
         testPatternSource.SetMaxFrameRate(true);
         testPatternSource.OnVideoSourceRawSample += VideoEncoderEndPoint.ExternalVideoSourceRawSample;
         
-        #if false
-        testPatternSource.OnVideoSourceRawSample += delegate(uint milliseconds, int width, int height, byte[] sample,
-            VideoPixelFormatsEnum format)
-        {
-            logger.LogDebug($"Have new frame {width}x{height}");
-        };
-        #endif
         VideoEncoderEndPoint.OnVideoSourceEncodedSample += pc.SendVideo;
 
         // Add tracks.
@@ -94,6 +72,7 @@ public class WebRTCPeer
             {
                 //await audioSrc.CloseAudio();
                 await testPatternSource.CloseVideo();
+                this.Close("Was Disconnected");
             }
         };
 
@@ -104,5 +83,50 @@ public class WebRTCPeer
         //};
 
         return Task.FromResult(pc);
+    }
+    
+    
+    public Task Start()
+    {
+        _cts = new CancellationTokenSource();
+        return _webrtcRestSignaling.Start(_cts);
+        //return Task.CompletedTask;
+    }
+
+    
+    public void Close(string reason)
+    {
+        if (!_isClosed)
+        {
+            _cts?.Cancel();
+            _cts = null;
+            _webrtcRestSignaling?.RTCPeerConnection?.Close(reason);
+            _webrtcRestSignaling = null;
+            VideoEncoderEndPoint?.CloseVideo();
+            _isClosed = true;
+            OnClose?.Invoke(reason);
+        }
+    }
+
+
+    public void Dispose()
+    {
+        if (!_isClosed)
+        {
+            Close("Disposing");
+        }
+    }
+    
+    
+    public WebRTCPeer()
+    {
+        logger = SIPSorcery.LogFactory.CreateLogger("webrtc");
+
+        VideoEncoderEndPoint = new SIPSorceryMedia.Encoders.VideoEncoderEndPoint();
+        
+        _webrtcRestSignaling = new WebRTCRestSignalingPeer(
+            REST_SIGNALING_SERVER,
+            REST_SIGNALING_MY_ID, REST_SIGNALING_THEIR_ID,
+            this.CreatePeerConnection);
     }
 }

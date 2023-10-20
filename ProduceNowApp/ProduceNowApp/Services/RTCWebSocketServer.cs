@@ -94,11 +94,7 @@ public class RTCWebSocketServer
         "3ZUEjvOG4h1ZHzxhlYSfjeqQC30HZkrmTfgbvYFCKMYO/rEDd2ggHVR8AdFWjLkOhGtavuiTl6a5"
         ;
 
-    private X509Certificate2 GetCertificate()
-    {
-        return new X509Certificate2(Encoding.ASCII.GetBytes(cert));
-    }
-        #if false
+    #if true
     private static X509Certificate2 LoadCertificate(string path)
     {
         if (!File.Exists(path))
@@ -122,7 +118,8 @@ public class RTCWebSocketServer
             return cert;
         }
     }
-#endif
+    #endif
+
 
     private void _onVideoSinkDecodedSampleFaster(RawImage rawImage)
     {
@@ -216,7 +213,8 @@ public class RTCWebSocketServer
             {
                 //iceServers = new List<RTCIceServer> { new RTCIceServer { urls = STUN_URL } }
                 X_UseRtpFeedbackProfile = true,
-                X_BindAddress = IPAddress.Any
+                X_BindAddress = IPAddress.Any,
+                certificates2 = new List<RTCCertificate2>() { SelfSignedCert.Instance.RtcCertificate2 }
             };
             pc = new RTCPeerConnection(config);
         }

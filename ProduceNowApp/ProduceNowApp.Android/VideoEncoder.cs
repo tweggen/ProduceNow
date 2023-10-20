@@ -155,9 +155,14 @@ public class VideoEncoder : IVideoEncoder
             }
             else if (result == (int)MediaCodecInfoState.OutputBuffersChanged)
             {
+                Console.WriteLine("result is OutputBufferChanged");
                 _mediaOutputBuffers = _mediaCodec.GetOutputBuffers();
             }
-            else
+            else if (result == (int)MediaCodecInfoState.TryAgainLater)
+            {
+                Console.WriteLine("result is TryAgainLater");
+                break;
+            } else
             {
                 if (sawInputEOS || !haveMoreInput)
                 {
