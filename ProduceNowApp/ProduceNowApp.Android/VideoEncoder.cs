@@ -140,20 +140,17 @@ public class VideoEncoder : IVideoEncoder
                 if (outputBuffer != null)
                 {
                     var mediaFormat = _mediaCodec.GetOutputFormat(outputBufIndex);
-                    foreach (var key in mediaFormat.Keys)
-                    {
-                        Console.WriteLine($"Found key {key}.");   
-                    }
-                    foreach (var feature in mediaFormat.Features)
-                    {
-                        Console.WriteLine($"Found feature {feature}.");   
-                    }
-                    Console.WriteLine($"Have media format: {mediaFormat.Keys}.");
+                    int width = mediaFormat.GetInteger(MediaFormat.KeyWidth);
+                    int height = mediaFormat.GetInteger(MediaFormat.KeyHeight);
+                    int colorFormat = mediaFormat.GetInteger(MediaFormat.KeyColorFormat);
+                    int stride = mediaFormat.GetInteger(MediaFormat.KeyStride);
+                    
+                    Console.WriteLine($"color format: {colorFormat}, stride {stride}.");
                     byte[] outputBytes = new byte[outputBuffer.Capacity()];
                     outputBuffer.Get(outputBytes);
                     listFrames.Add(new()
                     {
-                        Width = 640, Height = 480, Sample = outputBytes
+                        Width = (uint)width, Height = (uint)height, Sample = outputBytes
                     });
                     if ((_mediaBufferInfo.Flags & MediaCodecBufferFlags.EndOfStream) != 0)
                     {
