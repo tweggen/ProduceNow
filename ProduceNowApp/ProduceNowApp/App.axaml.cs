@@ -1,14 +1,16 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using ProduceNowApp.Services;
 using ProduceNowApp.ViewModels;
 using ProduceNowApp.Views;
+using Splat;
 
 namespace ProduceNowApp;
 
 public partial class App : Application
 {
-    private Services.RTCWebSocketServer _rtcWebSocketServer;
+    private Bootstrapper _bootstrapper = new (Locator.CurrentMutable, Locator.Current);
     
     public override void Initialize()
     {

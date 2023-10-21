@@ -3,11 +3,14 @@ using System.Reactive.Linq;
 using ProduceNowApp.Models;
 using ProduceNowApp.Services;
 using ReactiveUI;
+using Splat;
 
 namespace ProduceNowApp.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
+    private Database _database = Locator.Current.GetService<Database>();
+
     ViewModelBase content;
 
     public MainViewModel()
@@ -37,8 +40,8 @@ public class MainViewModel : ViewModelBase
             {
                 if (modelChannelPresentation != null)
                 {
-                    Database.Instance.ClientConfig.Add(modelChannelPresentation);
-                    Database.Instance.SaveClientConfig();
+                    _database.ClientConfig.Add(modelChannelPresentation);
+                    _database.SaveClientConfig();
                 }
 
                 Content = VMRecChannels;
@@ -60,8 +63,8 @@ public class MainViewModel : ViewModelBase
             {
                 if (modelSettings != null)
                 {
-                    Database.Instance.ClientConfig.SetSettings(modelSettings);
-                    Database.Instance.SaveClientConfig();
+                    _database.ClientConfig.SetSettings(modelSettings);
+                    _database.SaveClientConfig();
                 }
 
                 Content = VMRecChannels;

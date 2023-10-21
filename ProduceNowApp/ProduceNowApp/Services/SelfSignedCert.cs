@@ -1,21 +1,20 @@
 using System;
 using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.X509;
 using SIPSorcery.Net;
 
 namespace ProduceNowApp.Services;
 
 public class SelfSignedCert
 {
-    public RTCCertificate2 RtcCertificate2;
+    public AsymmetricKeyParameter PrivateKey;
+    public Org.BouncyCastle.X509.X509Certificate Certificate;
     
-    private SelfSignedCert()
+    public SelfSignedCert()
     {
         Console.WriteLine("Generating self signed certificate...");
-        Org.BouncyCastle.X509.X509Certificate certificate;
-        AsymmetricKeyParameter privateKey;
-        (certificate, privateKey) = DtlsUtils.CreateSelfSignedBouncyCastleCert();
-        RtcCertificate2 = new() { Certificate = certificate, PrivateKey = privateKey };
+        (Certificate, PrivateKey) = DtlsUtils.CreateSelfSignedBouncyCastleCert();
+        //RtcCertificate2 = new() { Certificate = certificate, PrivateKey = privateKey };
         Console.WriteLine("... done creating certificate.");
     }
-    static public SelfSignedCert Instance = new ();
 }

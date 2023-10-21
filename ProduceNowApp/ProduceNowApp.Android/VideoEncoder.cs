@@ -135,10 +135,20 @@ public class VideoEncoder : IVideoEncoder
             if (result >= 0)
             {
                 int outputBufIndex = result;
+                
                 var outputBuffer = _mediaOutputBuffers[outputBufIndex];
                 if (outputBuffer != null)
                 {
-                    Console.WriteLine($"Have output buffer.");
+                    var mediaFormat = _mediaCodec.GetOutputFormat(outputBufIndex);
+                    foreach (var key in mediaFormat.Keys)
+                    {
+                        Console.WriteLine($"Found key {key}.");   
+                    }
+                    foreach (var feature in mediaFormat.Features)
+                    {
+                        Console.WriteLine($"Found feature {feature}.");   
+                    }
+                    Console.WriteLine($"Have media format: {mediaFormat.Keys}.");
                     byte[] outputBytes = new byte[outputBuffer.Capacity()];
                     outputBuffer.Get(outputBytes);
                     listFrames.Add(new()
@@ -162,13 +172,16 @@ public class VideoEncoder : IVideoEncoder
             {
                 Console.WriteLine("result is TryAgainLater");
                 break;
-            } else
+            } else if (result == (int)MediaCodecInfoState.OutputFormatChanged)
+            {
+                Console.WriteLine("New output format detected.");
+            } /* else
             {
                 if (sawInputEOS || !haveMoreInput)
                 {
                     break;
                 }
-            }
+            }*/
 
         }
 

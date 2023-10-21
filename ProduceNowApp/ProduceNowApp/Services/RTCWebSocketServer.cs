@@ -209,12 +209,16 @@ public class RTCWebSocketServer
         try
         {
             
+            var certStore = Locator.Current.GetService<CertificateStore>();
             RTCConfiguration config = new RTCConfiguration
             {
                 //iceServers = new List<RTCIceServer> { new RTCIceServer { urls = STUN_URL } }
                 X_UseRtpFeedbackProfile = true,
                 X_BindAddress = IPAddress.Any,
-                certificates2 = new List<RTCCertificate2>() { SelfSignedCert.Instance.RtcCertificate2 }
+                certificates2 = new List<RTCCertificate2>() 
+                {
+                    certStore.CreateRtcCertificate2()
+                }
             };
             pc = new RTCPeerConnection(config);
         }

@@ -7,11 +7,14 @@ using Org.BouncyCastle.Tls;
 using ReactiveUI;
 using ProduceNowApp.Models;
 using ProduceNowApp.Services;
+using Splat;
 
 namespace ProduceNowApp.ViewModels;
 
 public class ChannelPresentationViewModel : ViewModelBase, IDisposable
 {
+    private Database _database = Locator.Current.GetService<Database>();
+    
     private ChannelPresentation _channelPresentation;
 
     private Services.RTCWebSocketServer _rtcWebSocketServer;
@@ -111,7 +114,7 @@ public class ChannelPresentationViewModel : ViewModelBase, IDisposable
         NoRecord = new Bitmap(AssetLoader.Open(new Uri("avares://ProduceNowApp/Assets/NoRecord.png")));
         Record = new Bitmap(AssetLoader.Open(new Uri("avares://ProduceNowApp/Assets/Record.png")));
         _rtcWebSocketServer = new();
-        _rtcWebSocketServer.Setup(Database.Instance.ClientConfig.Settings.ConfigUrl);
+        _rtcWebSocketServer.Setup(_database.ClientConfig.Settings.ConfigUrl);
         _rtcWebSocketServer.OnNewBitmap += (sender, bitmap) =>
         {
             MiniPicture = bitmap;

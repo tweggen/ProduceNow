@@ -2,11 +2,14 @@ using ReactiveUI;
 using System.Reactive;
 using ProduceNowApp.Models;
 using ProduceNowApp.Services;
+using Splat;
 
 namespace ProduceNowApp.ViewModels;
 
 public class SettingsViewModel : ViewModelBase
 {
+    private Database _database = Locator.Current.GetService<Database>();
+    
     private string _configUrl = "";
     public string ConfigUrl
     {
@@ -40,10 +43,10 @@ public class SettingsViewModel : ViewModelBase
     
     public SettingsViewModel()
     {
-        ConfigUrl = Database.Instance.ClientConfig.Settings.ConfigUrl;
-        RabbitMqServer = Database.Instance.ClientConfig.Settings.RabbitMqServer;
-        MqttServer = Database.Instance.ClientConfig.Settings.MqttServer;
-        DebugSettings = Database.Instance.ClientConfig.Settings.DebugSettings;
+        ConfigUrl = _database.ClientConfig.Settings.ConfigUrl;
+        RabbitMqServer = _database.ClientConfig.Settings.RabbitMqServer;
+        MqttServer = _database.ClientConfig.Settings.MqttServer;
+        DebugSettings = _database.ClientConfig.Settings.DebugSettings;
 
         var okEnabled = this.WhenAnyValue(
             x => x.ConfigUrl,

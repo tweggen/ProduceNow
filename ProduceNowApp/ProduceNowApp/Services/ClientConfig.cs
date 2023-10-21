@@ -8,7 +8,6 @@ public sealed class ClientConfig
     [LiteDB.BsonId]
     public int Id { get; set; } = 1;
 
-    
     private List<ChannelPresentation> _listChannels = new();
 
     
@@ -24,6 +23,10 @@ public sealed class ClientConfig
         get => _modelSettings;
         set => _modelSettings = value; 
     }
+
+
+    public string PrivateKeyString;
+    public string CertificateString;
     
 
     public void Add(ChannelPresentation modelChannelPresentation)

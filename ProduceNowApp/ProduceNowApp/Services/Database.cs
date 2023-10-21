@@ -44,10 +44,6 @@ public class Database
     }
 
 
-    private static readonly Lazy<Database> lazy =
-        new Lazy<Database>(() => new Database());
-
-
     public void _close()
     {
         if (null != _db)
@@ -171,8 +167,5 @@ public class Database
         ClientConfig = new();
         LoadClientConfig();
     }
-    
-    
-    public static Database Instance { get { return lazy.Value; } }
 }
 
