@@ -84,6 +84,11 @@ public class VideoEncoder : IVideoEncoder
                 
                 _mediaInputBuffers = _mediaCodec.GetInputBuffers();
                 _mediaOutputBuffers = _mediaCodec.GetOutputBuffers();
+
+                MediaCodecInfo mediaCodecInfo = _mediaCodec.CodecInfo;
+                var caps = mediaCodecInfo.GetCapabilitiesForType(MimeVp8);
+                var colorFormats = caps?.ColorFormats;
+
             }
         }
     }

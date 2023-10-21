@@ -125,9 +125,51 @@ public class RTCWebSocketServer
     {
         logger.LogDebug($"SampleFaster called.");
     }
-    
-    
-    private static WriteableBitmap CreateBitmapFromPixelData( 
+
+
+    private static WriteableBitmap CreateBitmapFromYUVPixelData(
+        byte[] yuvPixelData,
+        uint pixelWidth,
+        uint pixelHeight,
+        int stride,
+        VideoPixelFormatsEnum pixFormat)
+    {
+        // Standard may need to change on some devices 
+        Vector dpi = new Vector(96, 96);
+        PixelFormat avPixFormat = PixelFormat.Bgra8888;
+
+        var bitmap = new WriteableBitmap(
+            new PixelSize((int)pixelWidth, (int)pixelHeight),
+            dpi,
+            PixelFormat.Bgra8888,
+            AlphaFormat.Premul);
+
+        using (var frameBuffer = bitmap.Lock())
+        {
+            for (int y = 0; y < pixelHeight; ++y)
+            {
+                //Span<byte> pixelRowSpan = bgraPixelData.AsSpan(y * stride);
+                IntPtr pixelRowPtr = frameBuffer.Address + y * frameBuffer.RowBytes;
+                
+                for (int x = 0; x < pixelWidth; x++)
+                {
+                    byte[] rgbaPixel =
+                    {
+                        yuvPixelData[y*pixelWidth+x+0], 
+                        yuvPixelData[y*pixelWidth+x+1], 
+                        yuvPixelData[y*(pixelWidth/2)+x+2], 255
+                    };
+                    Marshal.Copy(rgbaPixel, 0, pixelRowPtr + x * 4, 4);
+                }
+            }
+            //Marshal.Copy(
+            //    bgraPixelData, 0, frameBuffer.Address, bgraPixelData.Length); 
+        }
+
+        return bitmap;
+    }
+
+    private static WriteableBitmap CreateBitmapFromRGBPixelData( 
         byte[] bgraPixelData, 
         uint pixelWidth, 
         uint pixelHeight,
@@ -191,8 +233,21 @@ public class RTCWebSocketServer
         int stride,
         VideoPixelFormatsEnum pixelFormat)
     {
+        var l = sample.Length;
+        WriteableBitmap? bitmap = null;
+        
+        /*
+         * TXWTODO: Find a proper way to pass the color representation. 
+         */
+        if (l >= (width * height * 3))
+        {
+            bitmap = CreateBitmapFromRGBPixelData(sample, width, height, stride, pixelFormat);
+        }
+        else
+        {
+            bitmap = CreateBitmapFromYUVPixelData(sample, width, height, stride, pixelFormat);
+        }
 
-        WriteableBitmap bitmap = CreateBitmapFromPixelData(sample, width, height, stride, pixelFormat);
         OnNewBitmap?.Invoke(this, bitmap);
     }
     
