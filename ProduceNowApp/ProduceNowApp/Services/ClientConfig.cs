@@ -25,8 +25,8 @@ public sealed class ClientConfig
     }
 
 
-    public string PrivateKeyString;
-    public string CertificateString;
+    public string PrivateKeyString { get; set; } = "";
+    public string CertificateString { get; set; } = "";
     
 
     public void Add(ChannelPresentation modelChannelPresentation)

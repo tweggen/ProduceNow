@@ -68,6 +68,4 @@ public class SettingsViewModel : ViewModelBase
             okEnabled);
         Cancel = ReactiveCommand.Create(() => { });
     }
-
-    
 }

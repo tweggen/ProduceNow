@@ -6,8 +6,8 @@ public class Bootstrapper
 {
     public Bootstrapper(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
     {
-        services.Register<Services.Database>(() => new Services.Database());
-        services.Register<Services.CertificateStore>(() => new Services.CertificateStore());
-        services.Register<Services.SelfSignedCert>(() => new Services.SelfSignedCert());
+        services.RegisterLazySingleton<Services.Database>(() => new Services.Database());
+        services.RegisterLazySingleton<Services.CertificateStore>(() => new Services.CertificateStore());
+        services.RegisterLazySingleton<Services.SelfSignedCert>(() => new Services.SelfSignedCert());
     }
 }

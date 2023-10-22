@@ -88,7 +88,7 @@ public class CertificateStore
          * First try a previously serialized 
          */
 
-        if (null==privateKey || null==certificate) {
+        if (null != clientConfig && null==privateKey || null==certificate) {
             try
             {
                 string privateKeyString = clientConfig.PrivateKeyString;

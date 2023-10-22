@@ -12,4 +12,5 @@ public partial class WebRTCSignal
     public string Signal { get; set; }
     public string Inserted { get; set; }
     public string DeliveredAt { get; set; }
+    public string LastQueriedAt { get; set; }
 }

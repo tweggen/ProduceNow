@@ -9,6 +9,6 @@ public class DesktopBootstrapper
     {
         // Call services.Register<T> and pass it lambda that creates instance of your service
         
-        services.Register<IVideoEncoderFactory>(() => new VideoEncoderFactory());
+        services.RegisterLazySingleton<IVideoEncoderFactory>(() => new VideoEncoderFactory());
     }
 }
