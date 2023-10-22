@@ -102,7 +102,7 @@ public class VideoEncoder : IVideoEncoder
         bool sawOutputEOS = false;
         bool sawInputEOS = false;
         bool haveMoreInput = true;
-        Console.WriteLine($"Decode media is called.");
+        // Console.WriteLine($"Decode media is called.");
         while (!sawOutputEOS)
         {
             if (!sawInputEOS && haveMoreInput)
@@ -124,7 +124,7 @@ public class VideoEncoder : IVideoEncoder
                             _mediaFrameIndex,
                             sawInputEOS ? MediaCodecBufferFlags.EndOfStream : 0
                         );
-                        Console.WriteLine($"successfully enqueued.");
+                        // Console.WriteLine($"successfully enqueued.");
                     }
                     catch (Exception e)
                     {
@@ -136,7 +136,7 @@ public class VideoEncoder : IVideoEncoder
             }
 
             int result = _mediaCodec.DequeueOutputBuffer(_mediaBufferInfo, DefaultTimeoutUs);
-            Console.WriteLine($"result is {result}.");
+            // Console.WriteLine($"result is {result}.");
             if (result >= 0)
             {
                 int outputBufIndex = result;
@@ -150,7 +150,7 @@ public class VideoEncoder : IVideoEncoder
                     int colorFormat = mediaFormat.GetInteger(MediaFormat.KeyColorFormat);
                     int stride = mediaFormat.GetInteger(MediaFormat.KeyStride);
                     
-                    Console.WriteLine($"color format: {colorFormat}, stride {stride}.");
+                    // Console.WriteLine($"color format: {colorFormat}, stride {stride}.");
                     byte[] outputBytes = new byte[outputBuffer.Capacity()];
                     outputBuffer.Get(outputBytes);
                     listFrames.Add(new()
@@ -167,24 +167,17 @@ public class VideoEncoder : IVideoEncoder
             }
             else if (result == (int)MediaCodecInfoState.OutputBuffersChanged)
             {
-                Console.WriteLine("result is OutputBufferChanged");
+                // Console.WriteLine("result is OutputBufferChanged");
                 _mediaOutputBuffers = _mediaCodec.GetOutputBuffers();
             }
             else if (result == (int)MediaCodecInfoState.TryAgainLater)
             {
-                Console.WriteLine("result is TryAgainLater");
+                // Console.WriteLine("result is TryAgainLater");
                 break;
             } else if (result == (int)MediaCodecInfoState.OutputFormatChanged)
             {
-                Console.WriteLine("New output format detected.");
-            } /* else
-            {
-                if (sawInputEOS || !haveMoreInput)
-                {
-                    break;
-                }
-            }*/
-
+                // Console.WriteLine("New output format detected.");
+            }
         }
 
         return listFrames;

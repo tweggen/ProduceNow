@@ -42,7 +42,7 @@ public class WebRTCPeer : IDisposable
         //audioSrc.OnAudioSourceEncodedSample += pc.SendAudio;
 
         var testPatternSource = new VideoTestPatternSource();
-        
+            
         testPatternSource.SetMaxFrameRate(true);
         testPatternSource.OnVideoSourceRawSample += VideoEncoderEndPoint.ExternalVideoSourceRawSample;
         
