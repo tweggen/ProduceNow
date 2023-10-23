@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SIPSorcery.Net;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Security.Cryptography;
 
 namespace DemoSignalServer.Controllers;
@@ -298,8 +299,18 @@ public class WebRTCSignalController : ControllerBase
         DateTime oldest = DateTime.UtcNow - TimeSpan.FromMilliseconds(SdpSignallingTimeoutMs);
 
         _logger.LogInformation($"@{nowString}: oldest: {oldest.ToString("o")}");
+        {
+            var all = await _context.WebRTCSignals.ToArrayAsync();
+            foreach (var entry in all)
+            {
+                DateTime dt = DateTime.Parse(entry.LastQueriedAt, null, DateTimeStyles.RoundtripKind);
+                _logger.LogInformation($"@{nowString}: oldest: {oldest.ToString("o")}, dt: {dt.ToString("o")}");
+            }
+        }
+
+
         var existing = await _context.WebRTCSignals.Where(x =>
-                (DateTime.Parse(x.LastQueriedAt) < oldest))
+                (DateTime.Parse(x.LastQueriedAt, null, DateTimeStyles.RoundtripKind) < oldest))
             .ToArrayAsync();
 
         await _dumpAll();
