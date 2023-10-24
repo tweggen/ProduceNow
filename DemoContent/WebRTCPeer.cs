@@ -10,7 +10,7 @@ namespace DemoContent;
 
 public class WebRTCPeer : IDisposable
 {
-    private const string REST_SIGNALING_SERVER =  "http://localhost:5245/api/WebRTCSignal"; // "http://localhost:5245/api/WebRTCSignal"; // "https://sipsorcery.cloud/api/webrtcsignal";
+    private const string REST_SIGNALING_SERVER =  "http://127.0.0.1:5245/api/WebRTCSignal"; // "http://localhost:5245/api/WebRTCSignal"; // "https://sipsorcery.cloud/api/webrtcsignal";
     private const string REST_SIGNALING_MY_ID = "uni";
     private const string REST_SIGNALING_THEIR_ID = "bro";
 

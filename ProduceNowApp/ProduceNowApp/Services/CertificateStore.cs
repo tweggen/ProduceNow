@@ -62,7 +62,7 @@ public class CertificateStore
     {
         TextReader textReader = new StringReader(str);
         PemReader pemReaer = new PemReader(textReader);
-        return (Org.BouncyCastle.Crypto.AsymmetricKeyParameter)pemReaer.ReadObject();
+        return ((Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair)pemReaer.ReadObject()).Private;
     }
 
 

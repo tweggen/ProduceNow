@@ -44,7 +44,7 @@ public class Database
     }
 
 
-    public void _close()
+    private void _close()
     {
         if (null != _db)
         {
@@ -152,6 +152,8 @@ public class Database
                 {
                     Console.WriteLine($"Unable to write clientConfig: {e}");
                 }
+
+                _close();
             }
             catch (Exception e)
             {
