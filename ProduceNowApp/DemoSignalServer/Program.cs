@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using DemoSignalServer.Models;
@@ -6,7 +7,8 @@ using Serilog;
 using Serilog.Extensions.Logging;
 using WindowsFirewallHelper;
 
-
+Debug.WriteLine("Starting debug");
+Console.WriteLine("Starting console");
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
