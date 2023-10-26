@@ -4,10 +4,10 @@ EXPOSE 5401
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["../DemoContent/DemoContent.csproj", "../DemoContent/"]
-RUN dotnet restore "../DemoContent/DemoContent.csproj"
+COPY ["DemoContent/DemoContent.csproj", "DemoContent/"]
+RUN dotnet restore "DemoContent/DemoContent.csproj"
 COPY . .
-WORKDIR "/src/../DemoContent"
+WORKDIR "/src/DemoContent"
 RUN dotnet build "DemoContent.csproj" -c Release -o /app/build
 
 FROM build AS publish
