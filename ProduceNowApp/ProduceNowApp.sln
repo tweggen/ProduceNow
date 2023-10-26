@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoContent", "..\DemoContent\DemoContent.csproj", "{919F4116-BB9D-40B2-8C62-7EE92CF6AD53}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoContent", "DemoContent\DemoContent.csproj", "{919F4116-BB9D-40B2-8C62-7EE92CF6AD53}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoSignalServer", "DemoSignalServer\DemoSignalServer.csproj", "{B51C1801-C2F0-4E5F-A13A-4B80BA62068E}"
 EndProject
