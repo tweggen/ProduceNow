@@ -239,8 +239,6 @@ public class WebRTCSignalController : ControllerBase
              (to.ToLower() == x.From.ToLower() && from.ToLower() == x.To.ToLower()))
            .ToArrayAsync();
 
-        await _dumpAll();
-
         if (existing?.Length > 0)
         {
             string nowString = DateTime.UtcNow.ToString("o");
@@ -261,8 +259,6 @@ public class WebRTCSignalController : ControllerBase
         var mine = await _context.WebRTCSignals.Where(x =>
             (fromWhom.ToLower() == x.From.ToLower())
             ).ToArrayAsync();
-
-        await _dumpAll();
 
         if (mine?.Length == 0)
         {
@@ -313,7 +309,7 @@ public class WebRTCSignalController : ControllerBase
                 (DateTime.Parse(x.LastQueriedAt, null, DateTimeStyles.RoundtripKind) < oldest))
             .ToArrayAsync();
 
-        await _dumpAll();
+        // await _dumpAll();
         if (existing?.Length > 0)
         {
             foreach(var old in existing)
