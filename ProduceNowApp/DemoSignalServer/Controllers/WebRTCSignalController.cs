@@ -15,6 +15,7 @@ public class WebRTCSignalController : ControllerBase
     private readonly Models.RTCSignalContext _context;
     private readonly IConfiguration _config;
     private readonly ILogger<WebRTCSignalController> _logger;
+    private readonly IServiceProvider _serviceProvider;
 
     public int SdpSignallingTimeoutMs
     {
@@ -25,11 +26,13 @@ public class WebRTCSignalController : ControllerBase
     public WebRTCSignalController(
         Models.RTCSignalContext context,
         IConfiguration config,
-        ILogger<WebRTCSignalController> logger)
+        ILogger<WebRTCSignalController> logger,
+        IServiceProvider serviceProvider)
     {
         _context = context;
         _config = config;
         _logger = logger;
+        _serviceProvider = serviceProvider;
     }
 
     /// <summary>
@@ -78,6 +81,8 @@ public class WebRTCSignalController : ControllerBase
         }
         _logger?.LogInformation($"GetSignalsForCaller to={to}, from={from}");
 
+        //var transientContext = _serviceProvider.GetRequiredService<RTCSignalContext>();
+        
         /*
          * First update all entries that we have registered (mark the LastQueriedAt)
          */
@@ -102,15 +107,31 @@ public class WebRTCSignalController : ControllerBase
             .OrderBy(x => x.Inserted)
             .FirstOrDefaultAsync();
 
+
+        Task<ActionResult<string>> ret;
+        
         if (nextSignal != null)
         {
             nextSignal.DeliveredAt = DateTime.UtcNow.ToString("o");
-            await _context.SaveChangesAsync();
-
+            try {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error while persisting changes: {e}");
+            }
+            
             return nextSignal.Signal;
         }
         else
         {
+            try {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error while persisting changes: {e}");
+            }
             return NoContent();
         }
     }
@@ -171,8 +192,14 @@ public class WebRTCSignalController : ControllerBase
 
         _context.WebRTCSignals.Add(sdpSignal);
 
-        await _context.SaveChangesAsync();
-
+        try {
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Error while persisting changes: {e}");
+        }
+        
         return Ok();
     }
 
@@ -221,7 +248,14 @@ public class WebRTCSignalController : ControllerBase
 
         _context.WebRTCSignals.Add(iceSignal);
 
-        await _context.SaveChangesAsync();
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Error while persisting changes: {e}");
+        }
 
         return Ok();
     }
@@ -247,7 +281,6 @@ public class WebRTCSignalController : ControllerBase
                 _logger.LogInformation($"@{nowString}: Removing dup from {dup.From} to {dup.To}");
             }
             _context.RemoveRange(existing);
-            await _context.SaveChangesAsync();
         }
     }
 
@@ -271,18 +304,6 @@ public class WebRTCSignalController : ControllerBase
             _logger.LogInformation($"@{nowString}: Marking mine from {my.From} to {my.To} last @{my.LastQueriedAt}");
             my.LastQueriedAt = nowString;
         }
-        await _context.SaveChangesAsync();
-    }
-
-
-    private async Task _dumpAll()
-    {
-        string nowString = DateTime.UtcNow.ToString("o");
-        var all = await _context.WebRTCSignals.ToArrayAsync();
-        foreach (var entry in all)
-        {
-            _logger.LogInformation($"@{nowString}: Have from {entry.From} to {entry.To} last @{entry.LastQueriedAt}");
-        }
     }
 
 
@@ -291,6 +312,7 @@ public class WebRTCSignalController : ControllerBase
     /// </summary>
     private async Task ExpireTimedout()
     {
+        
         string nowString = DateTime.UtcNow.ToString("o");
         DateTime oldest = DateTime.UtcNow - TimeSpan.FromMilliseconds(SdpSignallingTimeoutMs);
 
@@ -312,12 +334,12 @@ public class WebRTCSignalController : ControllerBase
         // await _dumpAll();
         if (existing?.Length > 0)
         {
-            foreach(var old in existing)
+            foreach (var old in existing)
             {
                 _logger.LogInformation($"@{nowString}: About to remove old from {old.From} to {old.To}");
             }
+
             _context.RemoveRange(existing);
-            await _context.SaveChangesAsync();
         }
     }
 }
