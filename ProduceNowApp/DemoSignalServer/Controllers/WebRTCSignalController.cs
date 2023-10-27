@@ -35,6 +35,24 @@ public class WebRTCSignalController : ControllerBase
         _serviceProvider = serviceProvider;
     }
 
+
+    private async Task _repeatUntilDone(Func<Task> call)
+    {
+        while (true)
+        {
+            try
+            {
+                await call();
+                break;
+            }
+            catch (DbUpdateConcurrencyException e)
+            {
+                _logger.LogInformation("Repeating database call due to concurrency exception.");
+            }
+        }
+    }
+    
+    
     /// <summary>
     /// Gets a list of the "callers" that have one or more current WebRTC signals pending 
     /// for the "to" identity.
@@ -73,68 +91,65 @@ public class WebRTCSignalController : ControllerBase
     /// });
     /// </example>
     [HttpGet("{to}/{from}/{type=any}")]
-    public async Task<ActionResult<string>> GetSignalsForCaller(string to, string from, WebRTCSignalTypesEnum type = WebRTCSignalTypesEnum.any)
+    public async Task<ActionResult<string>> GetSignalsForCaller(string to, string from,
+        WebRTCSignalTypesEnum type = WebRTCSignalTypesEnum.any)
     {
         if (string.IsNullOrEmpty(to) || string.IsNullOrEmpty(from))
         {
             return BadRequest();
         }
+
         _logger?.LogInformation($"GetSignalsForCaller to={to}, from={from}");
 
         //var transientContext = _serviceProvider.GetRequiredService<RTCSignalContext>();
-        
+
         /*
          * First update all entries that we have registered (mark the LastQueriedAt)
          */
-        await MarkMyPuts(to);
+        await _repeatUntilDone(async () => await MarkMyPuts(to));
 
         /*
          * Expire the timed out clients
          */
-        await ExpireTimedout();
+        await _repeatUntilDone(async () => await ExpireTimedout());
 
-        var query = _context.WebRTCSignals.Where(x =>
-            x.To.ToLower() == to.ToLower() &&
-            x.From.ToLower() == from.ToLower() &&
-            x.DeliveredAt == null);
-
-        if (type != WebRTCSignalTypesEnum.any)
+        while (true)
         {
-            query = query.Where(x => x.SignalType == type.ToString());
-        }
-
-        var nextSignal = await query
-            .OrderBy(x => x.Inserted)
-            .FirstOrDefaultAsync();
-
-
-        Task<ActionResult<string>> ret;
-        
-        if (nextSignal != null)
-        {
-            nextSignal.DeliveredAt = DateTime.UtcNow.ToString("o");
-            try {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
+            try
             {
-                _logger.LogError($"Error while persisting changes: {e}");
+                var query = _context.WebRTCSignals.Where(x =>
+                    x.To.ToLower() == to.ToLower() &&
+                    x.From.ToLower() == from.ToLower() &&
+                    x.DeliveredAt == null);
+
+                if (type != WebRTCSignalTypesEnum.any)
+                {
+                    query = query.Where(x => x.SignalType == type.ToString());
+                }
+
+                var nextSignal = await query
+                    .OrderBy(x => x.Inserted)
+                    .FirstOrDefaultAsync();
+
+
+                if (nextSignal != null)
+                {
+                    nextSignal.DeliveredAt = DateTime.UtcNow.ToString("o");
+                    await _context.SaveChangesAsync();
+                    return nextSignal.Signal;
+                }
+                else
+                {
+                    return NoContent();
+                }
             }
-            
-            return nextSignal.Signal;
-        }
-        else
-        {
-            try {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
+            catch (DbUpdateConcurrencyException e)
             {
-                _logger.LogError($"Error while persisting changes: {e}");
+                _logger.LogInformation("Repeating query due to concurrency.");
             }
-            return NoContent();
         }
     }
+
 
     /// <summary>
     /// Inserts a new WebRTC signal message.
@@ -175,34 +190,39 @@ public class WebRTCSignalController : ControllerBase
 
         if (sdp.type == RTCSdpType.offer)
         {
-            await ExpireExisting(from, to);
+            await _repeatUntilDone(async () => await ExpireExisting(from, to));
         }
 
-        string nowString = DateTime.UtcNow.ToString("o");
-        Models.WebRTCSignal sdpSignal = new Models.WebRTCSignal
+        while (true)
         {
-            ID = Guid.NewGuid().ToString(),
-            To = to,
-            From = from,
-            SignalType = WebRTCSignalTypesEnum.sdp.ToString(),
-            Signal = sdp.toJSON(),
-            Inserted = nowString,
-            LastQueriedAt = nowString
-        };
+            try
+            {
+                string nowString = DateTime.UtcNow.ToString("o");
+                Models.WebRTCSignal sdpSignal = new Models.WebRTCSignal
+                {
+                    ID = Guid.NewGuid().ToString(),
+                    To = to,
+                    From = from,
+                    SignalType = WebRTCSignalTypesEnum.sdp.ToString(),
+                    Signal = sdp.toJSON(),
+                    Inserted = nowString,
+                    LastQueriedAt = nowString
+                };
 
-        _context.WebRTCSignals.Add(sdpSignal);
+                await _context.WebRTCSignals.AddAsync(sdpSignal);
+                await _context.SaveChangesAsync();
+                break;
+            }
+            catch (DbUpdateConcurrencyException e)
+            {
+                _logger.LogInformation("Repeating query due to concurrency.");
+            }
+        }
 
-        try {
-            await _context.SaveChangesAsync();
-        }
-        catch (Exception e)
-        {
-            _logger.LogError($"Error while persisting changes: {e}");
-        }
-        
         return Ok();
     }
 
+    
     /// <summary>
     /// Inserts a new WebRTC signal message.
     /// </summary>
@@ -234,31 +254,37 @@ public class WebRTCSignalController : ControllerBase
             return BadRequest();
         }
 
-        string nowString = DateTime.UtcNow.ToString("o");
-        WebRTCSignal iceSignal = new WebRTCSignal
+        while (true)
         {
-            ID = Guid.NewGuid().ToString(),
-            To = to,
-            From = from,
-            SignalType = WebRTCSignalTypesEnum.ice.ToString(),
-            Signal = ice.toJSON(),
-            Inserted = nowString,
-            LastQueriedAt = nowString
-        };
+            try
+            {
 
-        _context.WebRTCSignals.Add(iceSignal);
+                string nowString = DateTime.UtcNow.ToString("o");
+                WebRTCSignal iceSignal = new WebRTCSignal
+                {
+                    ID = Guid.NewGuid().ToString(),
+                    To = to,
+                    From = from,
+                    SignalType = WebRTCSignalTypesEnum.ice.ToString(),
+                    Signal = ice.toJSON(),
+                    Inserted = nowString,
+                    LastQueriedAt = nowString
+                };
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (Exception e)
-        {
-            _logger.LogError($"Error while persisting changes: {e}");
+                await _context.WebRTCSignals.AddAsync(iceSignal);
+                await _context.SaveChangesAsync();
+                break;
+
+            }
+            catch (DbUpdateConcurrencyException e)
+            {
+                _logger.LogInformation($"Updated due to concurrency.");
+            }
         }
 
         return Ok();
     }
+    
 
     /// <summary>
     /// Removes any pending WebRTC signal messages for a WebRTC source and destination. The idea is that
@@ -269,29 +295,32 @@ public class WebRTCSignalController : ControllerBase
     private async Task ExpireExisting(string from, string to)
     {
         var existing = await _context.WebRTCSignals.Where(x =>
-            (from.ToLower() == x.From.ToLower() && to.ToLower() == x.To.ToLower()) ||
-             (to.ToLower() == x.From.ToLower() && from.ToLower() == x.To.ToLower()))
-           .ToArrayAsync();
+                (from.ToLower() == x.From.ToLower() && to.ToLower() == x.To.ToLower()) ||
+                (to.ToLower() == x.From.ToLower() && from.ToLower() == x.To.ToLower()))
+            .ToArrayAsync();
 
         if (existing?.Length > 0)
         {
             string nowString = DateTime.UtcNow.ToString("o");
-            foreach (var dup in existing)
-            {
-                _logger.LogInformation($"@{nowString}: Removing dup from {dup.From} to {dup.To}");
-            }
             _context.RemoveRange(existing);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException e)
+            {
+                _logger.LogError($"Rerunning due to concurrency problems.");
+            }
         }
     }
 
 
     private async Task MarkMyPuts(string fromWhom)
     {
-        // DateTime oldest = DateTime.Now - TimeSpan.FromMilliseconds(SdpSignallingTimeoutMs);
-
         var mine = await _context.WebRTCSignals.Where(x =>
             (fromWhom.ToLower() == x.From.ToLower())
-            ).ToArrayAsync();
+        ).ToArrayAsync();
 
         if (mine?.Length == 0)
         {
@@ -299,10 +328,25 @@ public class WebRTCSignalController : ControllerBase
         }
 
         string nowString = DateTime.UtcNow.ToString("o");
+        bool didModify = false;
         foreach (var my in mine)
         {
-            _logger.LogInformation($"@{nowString}: Marking mine from {my.From} to {my.To} last @{my.LastQueriedAt}");
+            _logger.LogInformation(
+                $"@{nowString}: Marking mine from {my.From} to {my.To} last @{my.LastQueriedAt}");
             my.LastQueriedAt = nowString;
+            didModify = true;
+        }
+
+        if (didModify)
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException e)
+            {
+                _logger.LogError($"Error while persisting changes: {e}");
+            }
         }
     }
 
@@ -317,6 +361,7 @@ public class WebRTCSignalController : ControllerBase
         DateTime oldest = DateTime.UtcNow - TimeSpan.FromMilliseconds(SdpSignallingTimeoutMs);
 
         _logger.LogInformation($"@{nowString}: oldest: {oldest.ToString("o")}");
+#if false
         {
             var all = await _context.WebRTCSignals.ToArrayAsync();
             foreach (var entry in all)
@@ -325,7 +370,7 @@ public class WebRTCSignalController : ControllerBase
                 _logger.LogInformation($"@{nowString}: oldest: {oldest.ToString("o")}, dt: {dt.ToString("o")}");
             }
         }
-
+#endif
 
         var existing = await _context.WebRTCSignals.Where(x =>
                 (DateTime.Parse(x.LastQueriedAt, null, DateTimeStyles.RoundtripKind) < oldest))
@@ -340,6 +385,14 @@ public class WebRTCSignalController : ControllerBase
             }
 
             _context.RemoveRange(existing);
+            
+            try {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error while persisting changes: {e}");
+            }
         }
     }
 }
