@@ -135,6 +135,7 @@ public class WebRTCSignalController : ControllerBase
                 if (nextSignal != null)
                 {
                     nextSignal.DeliveredAt = DateTime.UtcNow.ToString("o");
+                    _context.Update(nextSignal);
                     await _context.SaveChangesAsync();
                     return nextSignal.Signal;
                 }
@@ -172,16 +173,8 @@ public class WebRTCSignalController : ControllerBase
     [HttpPut("sdp/{from}/{to}")]
     public async Task<IActionResult> Put(string from, string to, [FromBody] RTCSessionDescriptionInit sdp)
     {
-        _logger?.LogInformation($"Put to={to}, from={from}");
+        _logger?.LogInformation($"Put to={to}, from={from}, sdp: {sdp.sdp}");
 
-        if (sdp != null)
-        {
-            Console.WriteLine($"sdp is {sdp}");
-        }
-        else
-        {
-            Console.WriteLine($"sdp is null.");
-        }
         if (string.IsNullOrEmpty(to) || string.IsNullOrEmpty(from) || sdp == null || sdp.sdp == null)
         {
             _logger.LogWarning($"WebRTC signal controller PUT sdp request had invalid parameters.");
@@ -331,9 +324,8 @@ public class WebRTCSignalController : ControllerBase
         bool didModify = false;
         foreach (var my in mine)
         {
-            _logger.LogInformation(
-                $"@{nowString}: Marking mine from {my.From} to {my.To} last @{my.LastQueriedAt}");
             my.LastQueriedAt = nowString;
+            _context.Update(my);
             didModify = true;
         }
 
@@ -359,18 +351,6 @@ public class WebRTCSignalController : ControllerBase
         
         string nowString = DateTime.UtcNow.ToString("o");
         DateTime oldest = DateTime.UtcNow - TimeSpan.FromMilliseconds(SdpSignallingTimeoutMs);
-
-        _logger.LogInformation($"@{nowString}: oldest: {oldest.ToString("o")}");
-#if false
-        {
-            var all = await _context.WebRTCSignals.ToArrayAsync();
-            foreach (var entry in all)
-            {
-                DateTime dt = DateTime.Parse(entry.LastQueriedAt, null, DateTimeStyles.RoundtripKind);
-                _logger.LogInformation($"@{nowString}: oldest: {oldest.ToString("o")}, dt: {dt.ToString("o")}");
-            }
-        }
-#endif
 
         var existing = await _context.WebRTCSignals.Where(x =>
                 (DateTime.Parse(x.LastQueriedAt, null, DateTimeStyles.RoundtripKind) < oldest))
