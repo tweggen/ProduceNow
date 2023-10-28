@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Xml;
 using Microsoft.Extensions.Logging;
 using SIPSorcery.Media;
@@ -10,7 +11,9 @@ namespace DemoContent;
 
 public class WebRTCPeer : IDisposable
 {
-    private const string REST_SIGNALING_SERVER = "http://127.0.0.1:5245/api/WebRTCSignal"; // "http://localhost:5245/api/WebRTCSignal"; // "https://sipsorcery.cloud/api/webrtcsignal";
+    public IPAddress MyIpAddress { get; set; } = null;
+    public string MyHostName;
+    private const string REST_SIGNALING_SERVER = "http://192.168.178.21:5245/api/WebRTCSignal"; // "http://localhost:5245/api/WebRTCSignal"; // "https://sipsorcery.cloud/api/webrtcsignal";
     private const string REST_SIGNALING_MY_ID = "uni";
     private const string REST_SIGNALING_THEIR_ID = "bro";
 
@@ -31,9 +34,10 @@ public class WebRTCPeer : IDisposable
     
     private Task<SIPSorcery.Net.RTCPeerConnection> CreatePeerConnection()
     {
+        logger.LogInformation($"Binding to IP address {MyIpAddress}");
         var pc = new SIPSorcery.Net.RTCPeerConnection(new RTCConfiguration()
         {
-            X_BindAddress = IPAddress.Any,
+            X_BindAddress = MyIpAddress,
             certificates2 = new List<RTCCertificate2>() { this.RtcCertificate2 }
         });
 
@@ -128,5 +132,38 @@ public class WebRTCPeer : IDisposable
             REST_SIGNALING_SERVER,
             REST_SIGNALING_MY_ID, REST_SIGNALING_THEIR_ID,
             this.CreatePeerConnection);
+
+        MyHostName = Dns.GetHostName();
+        logger.LogInformation($"Running on host \"{MyHostName}\"");
+#if false
+        var hostEntry = Dns.GetHostEntry(MyHostName);
+        var myAddresses = hostEntry.AddressList; 
+        // IsIPv4 == true AddressFamily == InterNetwork
+        MyIpAddress = myAddresses[0];
+        logger.LogInformation($"Detected IP address {MyIpAddress}");
+#endif
+        
+        
+        foreach(NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
+        {
+            if(ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet)
+            {
+                if (ni.OperationalStatus == OperationalStatus.Up)
+                {
+                    logger.LogInformation($"Using network interface {ni.Name}");
+                    foreach (UnicastIPAddressInformation ip in ni.GetIPProperties().UnicastAddresses)
+                    {
+                        if (ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                        {
+                            MyIpAddress = ip.Address;
+                            logger.LogInformation($"Using IP address {MyIpAddress}");
+                            break;
+                        }
+                    }
+                }
+
+                break;
+            }  
+        }
     }
 }
