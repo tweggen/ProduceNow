@@ -102,12 +102,17 @@ public class WebRTCPeer : IDisposable
     {
         if (!_isClosed)
         {
-            _cts?.Cancel();
-            _cts = null;
-            _webrtcRestSignaling?.RTCPeerConnection?.Close(reason);
-            _webrtcRestSignaling = null;
-            VideoEncoderEndPoint?.CloseVideo();
             _isClosed = true;
+            _cts?.Cancel();
+            _cts?.Dispose();
+            if (null != _webrtcRestSignaling.RTCPeerConnection)
+            {
+                if (!_webrtcRestSignaling.RTCPeerConnection.IsClosed)
+                {
+                    _webrtcRestSignaling.RTCPeerConnection.Close(reason);
+                }
+            }
+            VideoEncoderEndPoint?.CloseVideo();
             OnClose?.Invoke(reason);
         }
     }
@@ -128,11 +133,6 @@ public class WebRTCPeer : IDisposable
 
         VideoEncoderEndPoint = new SIPSorceryMedia.Encoders.VideoEncoderEndPoint();
         
-        _webrtcRestSignaling = new WebRTCRestSignalingPeer(
-            REST_SIGNALING_SERVER,
-            REST_SIGNALING_MY_ID, REST_SIGNALING_THEIR_ID,
-            this.CreatePeerConnection);
-
         MyHostName = Dns.GetHostName();
         logger.LogInformation($"Running on host \"{MyHostName}\"");
 #if false
@@ -165,5 +165,10 @@ public class WebRTCPeer : IDisposable
                 break;
             }  
         }
+        
+        _webrtcRestSignaling = new WebRTCRestSignalingPeer(
+            REST_SIGNALING_SERVER,
+            REST_SIGNALING_MY_ID, REST_SIGNALING_THEIR_ID,
+            this.CreatePeerConnection);
     }
 }

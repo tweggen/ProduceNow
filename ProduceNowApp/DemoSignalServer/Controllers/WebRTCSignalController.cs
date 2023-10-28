@@ -135,6 +135,7 @@ public class WebRTCSignalController : ControllerBase
                 if (nextSignal != null)
                 {
                     nextSignal.DeliveredAt = DateTime.UtcNow.ToString("o");
+                    _logger.LogInformation($"Returning signal {nextSignal.Signal} total {nextSignal}");
                     _context.Update(nextSignal);
                     await _context.SaveChangesAsync();
                     return nextSignal.Signal;
