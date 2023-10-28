@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoContent", "DemoContent\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoSignalServer", "DemoSignalServer\DemoSignalServer.csproj", "{B51C1801-C2F0-4E5F-A13A-4B80BA62068E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIPSorcery", "..\..\sipsorcery\src\SIPSorcery.csproj", "{B039000E-468D-4E21-AC01-55ADA073FCB8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,14 @@ Global
 		{B51C1801-C2F0-4E5F-A13A-4B80BA62068E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B51C1801-C2F0-4E5F-A13A-4B80BA62068E}.Release|ARM64.ActiveCfg = Release|Any CPU
 		{B51C1801-C2F0-4E5F-A13A-4B80BA62068E}.Release|ARM64.Build.0 = Release|Any CPU
+		{B039000E-468D-4E21-AC01-55ADA073FCB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B039000E-468D-4E21-AC01-55ADA073FCB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B039000E-468D-4E21-AC01-55ADA073FCB8}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{B039000E-468D-4E21-AC01-55ADA073FCB8}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{B039000E-468D-4E21-AC01-55ADA073FCB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B039000E-468D-4E21-AC01-55ADA073FCB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B039000E-468D-4E21-AC01-55ADA073FCB8}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{B039000E-468D-4E21-AC01-55ADA073FCB8}.Release|ARM64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
