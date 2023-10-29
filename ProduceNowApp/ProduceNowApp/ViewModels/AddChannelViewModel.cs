@@ -1,6 +1,7 @@
 
 using System;
 using System.Reactive;
+using Avalonia.Controls;
 using ReactiveUI;
 using ProduceNowApp.Models;
 
@@ -9,8 +10,10 @@ namespace ProduceNowApp.ViewModels;
 
 class AddChannelViewModel : ViewModelBase
 {
-    string shortTitle;
+    private ComboBoxItem feedItem;
+    private string shortTitle;
 
+    
     public AddChannelViewModel()
     {
         var okEnabled = this.WhenAnyValue(
@@ -21,11 +24,13 @@ class AddChannelViewModel : ViewModelBase
             () => new ChannelPresentation()
             {
                 Uuid = Guid.NewGuid().ToString(),
-                ShortTitle = ShortTitle
+                ShortTitle = ShortTitle,
+                Feed = FeedValue.Tag as string
             },
             okEnabled);
         Cancel = ReactiveCommand.Create(() => { });
     }
+    
 
     public string ShortTitle
     {
@@ -33,6 +38,14 @@ class AddChannelViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref shortTitle, value);
     }
 
+
+    public ComboBoxItem FeedValue
+    {
+        get => feedItem;
+        set => this.RaiseAndSetIfChanged(ref feedItem, value);
+    }
+    
+    
     public ReactiveCommand<Unit, ChannelPresentation> Ok { get; }
     public ReactiveCommand<Unit, Unit> Cancel { get; }
 }

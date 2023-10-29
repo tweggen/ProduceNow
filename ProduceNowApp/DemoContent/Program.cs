@@ -35,7 +35,10 @@ public class Program
     {
         _webRtcPeer = new WebRTCPeer()
         {
-            RtcCertificate2 = _rtcCertificate2
+            RtcCertificate2 = _rtcCertificate2,
+            UrlSignalingServer = EnvUrlSignalingServer,
+            MyName = EnvNameSource,
+            TargetName = EnvNameTarget
         };
         _webRtcPeer.OnClose += _onCloseWebRtcPeer;
         _webRtcPeer.Start();
@@ -53,11 +56,37 @@ public class Program
         _closeOldWebRtcPeer();
         _createNewWebRtcPeer();
     }
+
+    private static string EnvUrlSignalingServer;
+    private static string EnvNameSource;
+    private static string EnvNameTarget;
     
     
     static void Main()
     {
         AddConsoleLogger();
+
+        string? envUrlSignalingServer = System.Environment.GetEnvironmentVariable("DEMOCONTENT_URL_SIGNALING_SERVER");
+        if (string.IsNullOrWhiteSpace(envUrlSignalingServer))
+        {
+            envUrlSignalingServer = "http://192.168.178.21:5245/api/WebRTCSignal";
+        }
+        EnvUrlSignalingServer = envUrlSignalingServer;
+
+        string? envNameSource = System.Environment.GetEnvironmentVariable("DEMOCONTENT_MY_NAME");
+        if (string.IsNullOrWhiteSpace(envNameSource))
+        {
+            envNameSource = "uni";
+        }
+        EnvNameSource = envNameSource;
+
+        string? envNameTarget = System.Environment.GetEnvironmentVariable("DEMOCONTENT_TARGET_NAME");
+        if (string.IsNullOrWhiteSpace(envNameTarget))
+        {
+            envNameTarget = "bro";
+        }
+        EnvNameTarget = envNameTarget;
+            
         Console.WriteLine("DemoContent");
         Console.WriteLine("Creating certificate");
         Org.BouncyCastle.X509.X509Certificate certificate;

@@ -11,8 +11,35 @@
             <Button DockPanel.Dock="Bottom" Command="{Binding Cancel}">Cancel</Button>
             <Button DockPanel.Dock="Bottom" Command="{Binding Ok}">OK</Button>
         </StackPanel>
-        <TextBox AcceptsReturn="False"
-                 Text="{Binding ShortTitle}"
-                 Watermark="Description"/>
+        <Grid>
+            <Grid.ColumnDefinitions>  
+                <ColumnDefinition Width="100"/>  
+                <ColumnDefinition Width="400"/>  
+            </Grid.ColumnDefinitions>  
+            <Grid.RowDefinitions>  
+                <RowDefinition Height="40"/>  
+                <RowDefinition Height="40"/>  
+            </Grid.RowDefinitions>  
+            <Label Grid.Column="0" Grid.Row="0">
+                Description
+            </Label>
+            <TextBox Grid.Column="1"  Grid.Row="0"
+                     AcceptsReturn="False"
+                     Text="{Binding ShortTitle}"
+                     Watermark="Description"/>
+            <Label Grid.Column="0"  Grid.Row="1">
+                Select feed
+            </Label>
+            <ComboBox Grid.Column="1"  Grid.Row="1" SelectedItem="{Binding FeedValue}">
+                <ComboBoxItem IsSelected="true" Tag="i1">"Stone": Cam 1</ComboBoxItem>
+                <ComboBoxItem Tag="i2">"Stone": Cam 2</ComboBoxItem>
+                <ComboBoxItem Tag="i3">"Stone": Cam 3 (Crane)</ComboBoxItem>
+                <ComboBoxItem Tag="i4">"Stone": Cam 4</ComboBoxItem>
+                <ComboBoxItem Tag="i5">"Tarantino": Main Cam</ComboBoxItem>
+                <ComboBoxItem Tag="i6">"Tarantino": DV Cam</ComboBoxItem>
+                <ComboBoxItem Tag="i7">"Tarantino": Aux Cam</ComboBoxItem>
+            </ComboBox>
+                     
+        </Grid>
     </DockPanel>
 </UserControl>

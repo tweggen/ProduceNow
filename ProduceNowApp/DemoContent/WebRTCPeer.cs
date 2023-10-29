@@ -12,10 +12,10 @@ namespace DemoContent;
 public class WebRTCPeer : IDisposable
 {
     public IPAddress MyIpAddress { get; set; } = null;
-    public string MyHostName;
-    private const string REST_SIGNALING_SERVER = "http://192.168.178.21:5245/api/WebRTCSignal"; // "http://localhost:5245/api/WebRTCSignal"; // "https://sipsorcery.cloud/api/webrtcsignal";
-    private const string REST_SIGNALING_MY_ID = "uni";
-    private const string REST_SIGNALING_THEIR_ID = "bro";
+    public string MyHostName { get; set; }
+    public string UrlSignalingServer { get; set; }= "http://192.168.178.21:5245/api/WebRTCSignal"; // "http://localhost:5245/api/WebRTCSignal"; // "https://sipsorcery.cloud/api/webrtcsignal";
+    public string MyName { get; set; }= "uni";
+    public string TargetName { get; set; }= "bro";
 
     private static ILogger logger;
 
@@ -93,6 +93,11 @@ public class WebRTCPeer : IDisposable
     public Task Start()
     {
         _cts = new CancellationTokenSource();
+        
+        _webrtcRestSignaling = new WebRTCRestSignalingPeer(
+            UrlSignalingServer,
+            MyName, TargetName,
+            this.CreatePeerConnection);
         return _webrtcRestSignaling.Start(_cts);
         //return Task.CompletedTask;
     }
@@ -166,9 +171,5 @@ public class WebRTCPeer : IDisposable
             }  
         }
         
-        _webrtcRestSignaling = new WebRTCRestSignalingPeer(
-            REST_SIGNALING_SERVER,
-            REST_SIGNALING_MY_ID, REST_SIGNALING_THEIR_ID,
-            this.CreatePeerConnection);
     }
 }

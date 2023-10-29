@@ -33,7 +33,32 @@ public class ChannelPresentationViewModel : ViewModelBase, IDisposable
     {
         get => _channelPresentation.Uuid;
     }
-    
+
+    public string Feed
+    {
+        get
+        {
+            switch (_channelPresentation.Feed)
+            {
+                default:
+                case "i1":
+                    return "\"Stone\": Cam 1";
+                case "i2":
+                    return "\"Stone\": Cam 2";
+                case "i3":
+                    return "\"Stone\": Cam 3 (Crane)";
+                case "i4":
+                    return "\"Stone\": Cam 4";
+                case "i5":
+                    return "\"Tarantino\": Main Cam";
+                case "i6":
+                    return "\"Tarantino\": DV Cam";
+                case "i7":
+                    return "\"Tarantino\": Aux Cam";
+            }
+        }
+    }
+
     public bool IsRecording
     {
         get => _channelPresentation.IsRecording;

@@ -42,6 +42,8 @@
             <Button Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Background="{x:Null}" 
                     Command="{Binding $parent[v:ChannelPresentationsView].((vm:ChannelPresentationsViewModel)DataContext).RemoveChannel}"
                     CommandParameter="{Binding ChannelUuid}"/>
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                       Text="{Binding Feed}"/>
         </Grid>
         <!-- Image Width="640" Height="480" Source="{ Binding MiniPicture}"/ -->
     </StackPanel>    
