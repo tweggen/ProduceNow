@@ -40,6 +40,10 @@ public class Program
             MyName = EnvNameSource,
             TargetName = EnvNameTarget
         };
+        if (null != EnvIpAddress)
+            _webRtcPeer.MyIpAddress = IPAddress.Parse(EnvIpAddress);
+            
+            
         _webRtcPeer.OnClose += _onCloseWebRtcPeer;
         _webRtcPeer.Start();
     }
@@ -91,10 +95,13 @@ public class Program
         string envIpAddress = System.Environment.GetEnvironmentVariable("DEMOCONTENT_IP_ADDRESS");
         if (string.IsNullOrWhiteSpace(envIpAddress))
         {
-            envIpAddress = "192.168.178.21";
+            
+        }
+        else
+        {
+            EnvIpAddress = envIpAddress;
         }
 
-        EnvIpAddress = envIpAddress;
             
         Console.WriteLine("DemoContent");
         Console.WriteLine("Creating certificate");
