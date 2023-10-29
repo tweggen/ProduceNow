@@ -28,6 +28,11 @@ public class ChannelPresentationViewModel : ViewModelBase, IDisposable
     {
         get => _channelPresentation.StateString;
     }
+
+    public string ChannelUuid
+    {
+        get => _channelPresentation.Uuid;
+    }
     
     public bool IsRecording
     {

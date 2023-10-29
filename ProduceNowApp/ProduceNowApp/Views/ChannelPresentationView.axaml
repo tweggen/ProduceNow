@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              xmlns:vm="clr-namespace:ProduceNowApp.ViewModels"
+             xmlns:v="clr-namespace:ProduceNowApp.Views"
              x:DataType="vm:ChannelPresentationViewModel"
              x:Class="ProduceNowApp.Views.ChannelPresentationView">
     <StackPanel
@@ -36,7 +37,12 @@
                            Text="{Binding StateString}"/>
             </StackPanel>
         </StackPanel>
-        <Image Width="180" Height="150" Source="{ Binding MiniPicture}"/>
+        <Grid Width="180" Height="150">
+            <Image Width="180" Height="150" Source="{ Binding MiniPicture}"/>
+            <Button Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Background="{x:Null}" 
+                    Command="{Binding $parent[v:ChannelPresentationsView].((vm:ChannelPresentationsViewModel)DataContext).RemoveChannel}"
+                    CommandParameter="{Binding ChannelUuid}"/>
+        </Grid>
         <!-- Image Width="640" Height="480" Source="{ Binding MiniPicture}"/ -->
     </StackPanel>    
 </UserControl>

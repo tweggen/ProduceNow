@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Channels;
 using ProduceNowApp.Models;
 using ProduceNowApp.Services;
@@ -20,5 +21,18 @@ public class ChannelPresentationsViewModel : ViewModelBase
         }
     }
 
+ 
+
+    public void RemoveChannel(string channelUuid)
+    {
+        _database.ClientConfig.Remove(channelUuid);
+        _database.SaveClientConfig();
+        var ch = Items.Where(x => x.ChannelUuid == channelUuid).FirstOrDefault();
+        if (ch != null)
+        {
+            Items.Remove(ch);
+        }
+    }
+    
     public ObservableCollection<ChannelPresentationViewModel> Items { get; }
 }

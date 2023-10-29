@@ -1,4 +1,5 @@
 
+using System;
 using System.Reactive;
 using ReactiveUI;
 using ProduceNowApp.Models;
@@ -17,7 +18,11 @@ class AddChannelViewModel : ViewModelBase
             x => !string.IsNullOrWhiteSpace(x));
 
         Ok = ReactiveCommand.Create(
-            () => new ChannelPresentation() { ShortTitle = ShortTitle },
+            () => new ChannelPresentation()
+            {
+                Uuid = Guid.NewGuid().ToString(),
+                ShortTitle = ShortTitle
+            },
             okEnabled);
         Cancel = ReactiveCommand.Create(() => { });
     }

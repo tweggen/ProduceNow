@@ -34,6 +34,16 @@ public sealed class ClientConfig
         _listChannels.Add(modelChannelPresentation);        
     }
 
+
+    public void Remove(string channelUuid)
+    {
+        int index = _listChannels.FindIndex(c => c.Uuid==channelUuid);
+        if (index >= 0)
+        {
+            _listChannels.RemoveAt(index);
+        }
+    }
+    
     
     public void SetSettings(Models.Settings modelSettings)
     {

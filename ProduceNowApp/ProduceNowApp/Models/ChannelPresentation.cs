@@ -4,6 +4,7 @@ namespace ProduceNowApp.Models;
 
 public class ChannelPresentation
 {
+    public string Uuid { get; set; }
     public string ShortTitle { get; set; }
     public bool IsRecording { get; set; }
     public string StateString { get; set; }
