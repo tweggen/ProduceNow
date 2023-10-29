@@ -38,11 +38,12 @@ public class Program
             RtcCertificate2 = _rtcCertificate2,
             UrlSignalingServer = EnvUrlSignalingServer,
             MyName = EnvNameSource,
-            TargetName = EnvNameTarget
+            TargetName = EnvNameTarget,
+            PortPairBegin = EnvRtpPortPair
         };
         if (null != EnvIpAddress)
             _webRtcPeer.MyIpAddress = IPAddress.Parse(EnvIpAddress);
-            
+        
             
         _webRtcPeer.OnClose += _onCloseWebRtcPeer;
         _webRtcPeer.Start();
@@ -65,6 +66,7 @@ public class Program
     private static string EnvNameSource;
     private static string EnvNameTarget;
     private static string EnvIpAddress;
+    private static ushort EnvRtpPortPair = 0;
     
     
     static void Main()
@@ -100,6 +102,16 @@ public class Program
         else
         {
             EnvIpAddress = envIpAddress;
+        }
+
+        string envRtpPortPair = System.Environment.GetEnvironmentVariable("DEMOCONTENT_RTP_PORT_PAIR");
+        if (string.IsNullOrEmpty(envRtpPortPair))
+        {
+            
+        }
+        else
+        {
+            EnvRtpPortPair = (ushort) Int32.Parse(envRtpPortPair);
         }
 
             

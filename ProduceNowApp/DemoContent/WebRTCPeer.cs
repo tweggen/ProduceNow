@@ -4,6 +4,7 @@ using System.Xml;
 using Microsoft.Extensions.Logging;
 using SIPSorcery.Media;
 using SIPSorcery.Net;
+using SIPSorcery.Sys;
 using SIPSorceryMedia.Abstractions;
 using SIPSorceryMedia.Encoders;
 
@@ -16,6 +17,7 @@ public class WebRTCPeer : IDisposable
     public string UrlSignalingServer { get; set; }= "http://192.168.178.21:5245/api/WebRTCSignal"; // "http://localhost:5245/api/WebRTCSignal"; // "https://sipsorcery.cloud/api/webrtcsignal";
     public string MyName { get; set; }= "uni";
     public string TargetName { get; set; }= "bro";
+    public ushort PortPairBegin { get; set; } = 0;
 
     private static ILogger logger;
 
@@ -36,10 +38,13 @@ public class WebRTCPeer : IDisposable
     {
         logger.LogInformation($"Binding to IP address {MyIpAddress}");
         var pc = new SIPSorcery.Net.RTCPeerConnection(new RTCConfiguration()
-        {
-            X_BindAddress = MyIpAddress,
-            certificates2 = new List<RTCCertificate2>() { this.RtcCertificate2 }
-        });
+            {
+                X_BindAddress = MyIpAddress,
+                certificates2 = new List<RTCCertificate2>() { this.RtcCertificate2 }
+            }, 
+            0, 
+            (PortPairBegin!=0)?new PortRange(PortPairBegin, PortPairBegin+1):null
+            );
 
         // Set up sources and hook up send events to peer connection.
         //AudioExtrasSource audioSrc = new AudioExtrasSource(new AudioEncoder(), new AudioSourceOptions { AudioSource = AudioSourcesEnum.None });
