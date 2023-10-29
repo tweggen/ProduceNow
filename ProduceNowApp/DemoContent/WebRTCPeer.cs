@@ -181,7 +181,23 @@ public class WebRTCPeer : IDisposable
     {
         logger = SIPSorcery.LogFactory.CreateLogger("webrtc");
 
-        VideoEncoderEndPoint = new SIPSorceryMedia.Encoders.VideoEncoderEndPoint();
+        try
+        {
+            VideoEncoderEndPoint = new SIPSorceryMedia.Encoders.VideoEncoderEndPoint();
+        }
+        catch (Exception e)
+        {
+            logger.LogInformation("Unable to use libvpx encoder. Trying next.");
+        }
+
+        if (null == VideoEncoderEndPoint)
+        {
+            //   try
+            //   {
+            //        //VideoEncoderEndPoint = new SIPSorceryMedia.FFmpeg.FFmpegVideoEndPoint();
+            //   }
+            throw new ApplicationException("Unable to find an encoder implementation.");
+        }
         
         MyHostName = Dns.GetHostName();
         logger.LogInformation($"Running on host \"{MyHostName}\"");
