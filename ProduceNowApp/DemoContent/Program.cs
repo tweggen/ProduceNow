@@ -60,6 +60,7 @@ public class Program
     private static string EnvUrlSignalingServer;
     private static string EnvNameSource;
     private static string EnvNameTarget;
+    private static string EnvIpAddress;
     
     
     static void Main()
@@ -86,6 +87,14 @@ public class Program
             envNameTarget = "bro";
         }
         EnvNameTarget = envNameTarget;
+
+        string envIpAddress = System.Environment.GetEnvironmentVariable("DEMOCONTENT_IP_ADDRESS");
+        if (string.IsNullOrWhiteSpace(envIpAddress))
+        {
+            envIpAddress = "192.168.178.21";
+        }
+
+        EnvIpAddress = envIpAddress;
             
         Console.WriteLine("DemoContent");
         Console.WriteLine("Creating certificate");

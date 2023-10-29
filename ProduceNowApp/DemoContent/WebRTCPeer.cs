@@ -88,10 +88,50 @@ public class WebRTCPeer : IDisposable
 
         return Task.FromResult(pc);
     }
+
+
+    private void _computeIP()
+    {
+        if (null == MyIpAddress)
+        {
+            foreach (NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 ||
+                    ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet)
+                {
+                    if (ni.OperationalStatus == OperationalStatus.Up)
+                    {
+                        var ipProperties = ni.GetIPProperties();
+                        if (ipProperties.GatewayAddresses.Count > 0)
+                        {
+                            logger.LogInformation($"Using network interface {ni.Name}");
+                            foreach (UnicastIPAddressInformation ip in ni.GetIPProperties().UnicastAddresses)
+                            {
+                                if (ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                                {
+                                    MyIpAddress = ip.Address;
+                                    logger.LogInformation($"Using IP address {MyIpAddress}");
+                                    break;
+                                }
+                            }
+
+                            if (MyIpAddress != null) break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (null == MyIpAddress)
+        {
+            MyIpAddress = IPAddress.Parse("192.168.178.21");
+        }
+    }
     
     
     public Task Start()
     {
+        _computeIP();
         _cts = new CancellationTokenSource();
         
         _webrtcRestSignaling = new WebRTCRestSignalingPeer(
@@ -147,29 +187,6 @@ public class WebRTCPeer : IDisposable
         MyIpAddress = myAddresses[0];
         logger.LogInformation($"Detected IP address {MyIpAddress}");
 #endif
-        
-        
-        foreach(NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
-        {
-            if(ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet)
-            {
-                if (ni.OperationalStatus == OperationalStatus.Up)
-                {
-                    logger.LogInformation($"Using network interface {ni.Name}");
-                    foreach (UnicastIPAddressInformation ip in ni.GetIPProperties().UnicastAddresses)
-                    {
-                        if (ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                        {
-                            MyIpAddress = ip.Address;
-                            logger.LogInformation($"Using IP address {MyIpAddress}");
-                            break;
-                        }
-                    }
-                }
 
-                break;
-            }  
-        }
-        
     }
 }
