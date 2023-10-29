@@ -43,7 +43,7 @@ public class WebRTCPeer : IDisposable
                 certificates2 = new List<RTCCertificate2>() { this.RtcCertificate2 }
             }, 
             0, 
-            (PortPairBegin!=0)?new PortRange(PortPairBegin, PortPairBegin+1):null
+            (PortPairBegin!=0)?new PortRange(PortPairBegin, PortPairBegin+2):null
             );
 
         // Set up sources and hook up send events to peer connection.
