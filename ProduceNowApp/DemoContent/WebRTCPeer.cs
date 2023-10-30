@@ -179,7 +179,7 @@ public class WebRTCPeer : IDisposable
     
     public WebRTCPeer()
     {
-        logger = SIPSorcery.LogFactory.CreateLogger("webrtc");
+        logger = ApplicationLogging.LoggerFactory.CreateLogger<WebRTCPeer>();
 
         try
         {

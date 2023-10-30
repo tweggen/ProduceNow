@@ -9,6 +9,6 @@ public class AndroidBootstrapper
     {
         // Call services.Register<T> and pass it lambda that creates instance of your service
         
-        services.RegisterLazySingleton<IVideoEncoderFactory>(() => new VideoEncoderFactory());
+        services.Register<SIPSorceryMedia.Abstractions.IVideoEncoder>(() => new ProduceNowApp.Android.VideoEncoder());
     }
 }
