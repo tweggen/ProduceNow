@@ -472,8 +472,7 @@ public class RTCWebSocketServer
         Console.WriteLine("Console: gravi off navi on!");
         Debug.WriteLine("Debug: gravi off navi on!");
 
-        var videoEncoderFactory = Splat.Locator.Current.GetService<IVideoEncoderFactory>();
-        var videoEncoder = videoEncoderFactory.CreateVideoEncoder();
+        var videoEncoder = Splat.Locator.Current.GetService<IVideoEncoder>();
         _videoEP = new AvaloniaVideoEndpoint(videoEncoder);
         _videoEP.RestrictFormats(format => format.Codec == VideoCodecsEnum.VP8);
         
