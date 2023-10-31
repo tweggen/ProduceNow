@@ -137,6 +137,7 @@ public class WebRTCPeer : IDisposable
     public Task Start()
     {
         _computeIP();
+        logger.LogInformation($"Listening to IP address {MyIpAddress.ToString()}");
         _cts = new CancellationTokenSource();
         
         _webrtcRestSignaling = new WebRTCRestSignalingPeer(

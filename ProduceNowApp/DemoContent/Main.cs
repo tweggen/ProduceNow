@@ -14,6 +14,7 @@ public class Main
     
     void _createNewWebRtcPeer()
     {
+        _logger.LogInformation($"Creating new WebRTCPeer(), using signaling server {EnvUrlSignalingServer}, my name {EnvNameSource}, their name {EnvNameTarget}");
         _webRtcPeer = new WebRTCPeer()
         {
             RtcCertificate2 = _rtcCertificate2,

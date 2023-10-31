@@ -5,7 +5,8 @@ namespace DemoContent;
 public static class ApplicationLogging
 {
     private static ILoggerFactory _Factory = null;
-
+    public static ILoggerFactory UseFactory = null;
+    
     public static void ConfigureLogger(ILoggerFactory factory)
     {
     }
@@ -16,7 +17,14 @@ public static class ApplicationLogging
         {
             if (_Factory == null)
             {
-                _Factory = new LoggerFactory();
+                if (null != UseFactory)
+                {
+                    _Factory = UseFactory;
+                }
+                else
+                {
+                    _Factory = new LoggerFactory();
+                }
                 ConfigureLogger(_Factory);
             }
             return _Factory;

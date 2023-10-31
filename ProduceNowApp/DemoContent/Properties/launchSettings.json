@@ -14,7 +14,9 @@
       "dotnetRunMessages": true,
       "applicationUrl": "http://127.0.0.1:5401",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DEMOCONTENT_IP_ADDRESS": "127.0.0.1",
+        "DEMOCONTENT_URL_SIGNALING_SERVER": "http://127.0.0.1:5245/api/WebRTCSignal"
       }
     },
     "https": {

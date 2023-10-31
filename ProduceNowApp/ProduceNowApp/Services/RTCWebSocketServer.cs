@@ -42,9 +42,10 @@ public class RTCOptions
 
 public class RTCWebSocketServer
 {
-    private const string STUN_URL = "stun:stun.sipsorcery.com";
-    private const int WEBSOCKET_PORT = 8081;
-
+    private string EnvUrlSignalingServer;
+    private string EnvNameSource;
+    private string EnvNameTarget;
+    
     private static Microsoft.Extensions.Logging.ILogger logger = AddConsoleLogger(); // NullLogger.Instance;
 
     private RTCOptions _rtcOptions = new();
@@ -55,6 +56,34 @@ public class RTCWebSocketServer
     public EventHandler<Bitmap> OnNewBitmap;
 
 
+    private void _loadEnvironment()
+    {
+        string? envUrlSignalingServer = System.Environment.GetEnvironmentVariable("PRODUCENOW_URL_SIGNALING_SERVER");
+        if (string.IsNullOrWhiteSpace(envUrlSignalingServer))
+        {
+            envUrlSignalingServer = "http://192.168.178.21:5245/api/WebRTCSignal";
+        }
+
+        EnvUrlSignalingServer = envUrlSignalingServer;
+
+        string? envNameSource = System.Environment.GetEnvironmentVariable("PRODUCENOW_MY_NAME");
+        if (string.IsNullOrWhiteSpace(envNameSource))
+        {
+            envNameSource = "bro";
+        }
+
+        EnvNameSource = envNameSource;
+
+        string? envNameTarget = System.Environment.GetEnvironmentVariable("PRODUCENOW_TARGET_NAME");
+        if (string.IsNullOrWhiteSpace(envNameTarget))
+        {
+            envNameTarget = "uni";
+        }
+
+        EnvNameTarget = envNameTarget;
+    }
+    
+
     private static Microsoft.Extensions.Logging.ILogger AddConsoleLogger()
     {
         var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(
@@ -62,66 +91,9 @@ public class RTCWebSocketServer
         var logger = loggerFactory.CreateLogger("ProduceNow");
         SIPSorcery.LogFactory.Set(loggerFactory);
         return logger;
-
-#if false
-        var serilogLogger = new LoggerConfiguration()
-            .Enrich.FromLogContext()
-            .MinimumLevel.Is(Serilog.Events.LogEventLevel.Debug)
-            .WriteTo.Console(LogEventLevel.Verbose)
-            .CreateLogger();
-        var factory = new SerilogLoggerFactory(serilogLogger);
-        SIPSorcery.LogFactory.Set(factory);
-        return factory.CreateLogger<App>();
-#endif
     }
 
-
-    static private string cert =
-        "MIIDjDCCAnSgAwIBAgIEN0KUPTANBgkqhkiG9w0BAQsFADBbMScwJQYDVQQDDB5SZWdlcnkgU2Vs"+
-        "Zi1TaWduZWQgQ2VydGlmaWNhdGUxIzAhBgNVBAoMGlJlZ2VyeSwgaHR0cHM6Ly9yZWdlcnkuY29t"+
-        "MQswCQYDVQQGEwJVQTAgFw0yMzEwMTgwMDAwMDBaGA8yMTIzMTAxODE2MjA1MVowTjEaMBgGA1UE"+
-        "AwwRbmFzc2F1LXJlY29yZHMuZGUxIzAhBgNVBAoMGlJlZ2VyeSwgaHR0cHM6Ly9yZWdlcnkuY29t"+
-        "MQswCQYDVQQGEwJVQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANIqQ7Dx3+icIE8K"+
-        "VvXBikBCrOMEAnfoncXoCYfvkYa/tNPdsKkIgeCgvDaaQHaN6Lu5TLhxXO8I9Nsc/XuRF2TyY5id"+
-        "fYSqU8eha8Vq4PBSWzTG7pTxgsBq8a3POpu1JgxyUAD7EKdbTufkDiAAf3+7s1MUfgmJqY5+E3G/"+
-        "Xk5uYX2d02RYXyNMKBOQZB3HINH7DTZoqMCUzhGbkbHHf6I8q/optTnbMKDoEdyXyrIfRH6W75pm"+
-        "xtcMxLp5H6aV/6I9xrnIH5g4BNQ0JhEB49JDqOMfZgv9cX8P0Oze7gEpNkD578iVuyiD+w5Aq2gM"+
-        "h+GKftwqHz2J1KJsD6DSGXsCAwEAAaNjMGEwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMC"+
-        "AYYwHQYDVR0OBBYEFFFmL53VM+4Fc4KJjQCMvK07A2EDMB8GA1UdIwQYMBaAFFFmL53VM+4Fc4KJ"+
-        "jQCMvK07A2EDMA0GCSqGSIb3DQEBCwUAA4IBAQALeZnl8om/N3UuREW8onQZ2J1OsOSZHYl55UIG"+
-        "wo1HppHhQG+A9iTM4o8WC4Tdh5qGNEkQHWjgnxGQIOB++ukB+hlpDHw7atCtQoUwVb1KF8g5WmlR"+
-        "lhKlNxtZbLIOWFySOIQvK5jLhoURftDK+vEzT1xfg+1CCkCKt10l9dn7OMqUqWvTVY0uuvcvMYbK"+
-        "DYIC6lepRSeQdUrkbGA9bNjz7kYA4n8omklNpRbSL744kKIgAww2UsXFVOO5pP6tWSFLKRFmowFE"+
-        "3ZUEjvOG4h1ZHzxhlYSfjeqQC30HZkrmTfgbvYFCKMYO/rEDd2ggHVR8AdFWjLkOhGtavuiTl6a5"
-        ;
-
-    #if true
-    private static X509Certificate2 LoadCertificate(string path)
-    {
-        if (!File.Exists(path))
-        {
-            logger.LogWarning($"No certificate file could be found at {path}.");
-            return null;
-        }
-        else
-        {
-            X509Certificate2 cert = new X509Certificate2(path, "", X509KeyStorageFlags.Exportable);
-            if (cert == null)
-            {
-                logger.LogWarning($"Failed to load X509 certificate from file {path}.");
-            }
-            else
-            {
-                logger.LogInformation(
-                    $"Certificate file successfully loaded {cert.Subject}, thumbprint {cert.Thumbprint}, has private key {cert.HasPrivateKey}.");
-            }
-
-            return cert;
-        }
-    }
-    #endif
-
-
+    
     private void _onVideoSinkDecodedSampleFaster(RawImage rawImage)
     {
         logger.LogDebug($"SampleFaster called.");
@@ -180,80 +152,6 @@ public class RTCWebSocketServer
     }
     
     
-    #if false
-    
-    private static unsafe void YUV2RGBManaged(byte[] YUVData, byte[] RGBData, int width, int height)
-    {
-
-        //returned pixel format is 2yuv - i.e. luminance, y, is represented for every pixel and the u and v are alternated
-        //like this (where Cb = u , Cr = y)
-        //Y0 Cb Y1 Cr Y2 Cb Y3 
-
-        /*http://msdn.microsoft.com/en-us/library/ms893078.aspx
-         *
-         * C = Y - 16
-         D = U - 128
-         E = V - 128
-         R = clip(( 298 * C           + 409 * E + 128) >> 8)
-         G = clip(( 298 * C - 100 * D - 208 * E + 128) >> 8)
-         B = clip(( 298 * C + 516 * D           + 128) >> 8)
-
-         * here are a whole bunch more formats for doing this...
-         * http://stackoverflow.com/questions/3943779/converting-to-yuv-ycbcr-colour-space-many-versions
-         */
-
-
-        fixed (byte* pRGBs = RGBData, pYUVs = YUVData)
-        {
-            for (int r = 0; r < height; r++)
-            {
-                byte* pRGB = pRGBs + r * width * 3;
-                byte* pYUV = pYUVs + r * width * 2;
-
-                //process two pixels at a time
-                for (int c = 0; c < width; c += 2)
-                {
-                    int C1 = pYUV[1] - 16;
-                    int C2 = pYUV[3] - 16;
-                    int D = pYUV[2] - 128;
-                    int E = pYUV[0] - 128;
-
-                    int R1 = (298 * C1 + 409 * E + 128) >> 8;
-                    int G1 = (298 * C1 - 100 * D - 208 * E + 128) >> 8;
-                    int B1 = (298 * C1 + 516 * D + 128) >> 8;
-
-                    int R2 = (298 * C2 + 409 * E + 128) >> 8;
-                    int G2 = (298 * C2 - 100 * D - 208 * E + 128) >> 8;
-                    int B2 = (298 * C2 + 516 * D + 128) >> 8;
-#if true
-                    //check for overflow
-                    //unsurprisingly this takes the bulk of the time.
-                    pRGB[0] = (byte)(R1 < 0 ? 0 : R1 > 255 ? 255 : R1);
-                    pRGB[1] = (byte)(G1 < 0 ? 0 : G1 > 255 ? 255 : G1);
-                    pRGB[2] = (byte)(B1 < 0 ? 0 : B1 > 255 ? 255 : B1);
-
-                    pRGB[3] = (byte)(R2 < 0 ? 0 : R2 > 255 ? 255 : R2);
-                    pRGB[4] = (byte)(G2 < 0 ? 0 : G2 > 255 ? 255 : G2);
-                    pRGB[5] = (byte)(B2 < 0 ? 0 : B2 > 255 ? 255 : B2);
-#else
-                    pRGB[0] = (byte)(R1);
-                    pRGB[1] = (byte)(G1);
-                    pRGB[2] = (byte)(B1);
-
-                    pRGB[3] = (byte)(R2);
-                    pRGB[4] = (byte)(G2);
-                    pRGB[5] = (byte)(B2);
-#endif
-
-                    pRGB += 6;
-                    pYUV += 4;
-                }
-            }
-        }
-    }
-#endif
-
-
     private static unsafe WriteableBitmap CreateBitmapFromYUVPixelData(
         byte[] yuvPixelData,
         uint pixelWidth,
@@ -460,12 +358,13 @@ public class RTCWebSocketServer
         _webrtcRestSignaling?.RTCPeerConnection?.Close("" /* empty reason string */);
     }
 
-    private const string REST_SIGNALING_MY_ID = "bro";
-    private const string REST_SIGNALING_THEIR_ID = "uni";
-    
-    public void Setup(string strServerUrl)
+    public void Setup(string serverUrl)
     {
-        
+        _loadEnvironment();
+        if (!string.IsNullOrWhiteSpace(serverUrl))
+        {
+            EnvUrlSignalingServer = serverUrl+"/api/WebRTCSignal";
+        }
         // logger = AddConsoleLogger();
         _cts = new CancellationTokenSource();
         logger.LogError("Serilog: gravi off navi on!");
@@ -479,9 +378,9 @@ public class RTCWebSocketServer
         try
         {
             _webrtcRestSignaling = new WebRTCRestSignalingPeer(
-                strServerUrl + "/api/WebRTCSignal",
-                REST_SIGNALING_MY_ID,
-                REST_SIGNALING_THEIR_ID,
+                EnvUrlSignalingServer,
+                EnvNameSource,
+                EnvNameTarget,
                 this.CreatePeerConnection);
         }
         catch (Exception e)
