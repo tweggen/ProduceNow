@@ -24,7 +24,9 @@ public class WebRTCPeer : IDisposable
     private bool _isClosed = false;
     
     private WebRTCRestSignalingPeer _webrtcRestSignaling;
-    public VideoEncoderEndPoint VideoEncoderEndPoint { get; }
+    public VideoEncoderEndPoint  VideoEncoderEndPoint { get; }
+    
+   
     private CancellationTokenSource _cts;
 
     public delegate void OnCloseHandler(string reason);
