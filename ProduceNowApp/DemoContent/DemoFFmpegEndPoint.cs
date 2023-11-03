@@ -6,7 +6,7 @@ namespace DemoContent;
 
 public class DemoFFmpegEndPoint : IVideoEndPoint
 {
-    private readonly VideoFrameConverter _videoFrameConverter;
+    private VideoFrameConverter _videoFrameConverter;
     private readonly FFmpegVideoEncoder _ffmpegEncoder;
     private long _presentationTimestamp = 0;
 
@@ -27,6 +27,16 @@ public class DemoFFmpegEndPoint : IVideoEndPoint
         if (width != Width || height != Height)
         {
             throw new ArgumentException("Width/Height do not fit.");
+        }
+
+        if (null == _videoFrameConverter)
+        {
+            _videoFrameConverter = new VideoFrameConverter(
+                (int) Width, (int) Height,
+                AVPixelFormat.AV_PIX_FMT_BGR24,
+                (int) Width, (int) Height,
+                AVPixelFormat.AV_PIX_FMT_YUV420P);
+
         }
         var i420Frame = _videoFrameConverter.Convert(sample);
         _presentationTimestamp += durationMilliseconds;
@@ -71,11 +81,6 @@ public class DemoFFmpegEndPoint : IVideoEndPoint
     public DemoFFmpegEndPoint()
     {
         _ffmpegEncoder = new FFmpegVideoEncoder();
-        _videoFrameConverter = new VideoFrameConverter(
-            (int) Width, (int) Height,
-            AVPixelFormat.AV_PIX_FMT_BGRA,
-            (int) Width, (int) Height,
-            AVPixelFormat.AV_PIX_FMT_YUV420P);
         
     }
 }

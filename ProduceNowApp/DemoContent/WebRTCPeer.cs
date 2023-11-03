@@ -15,8 +15,8 @@ public class WebRTCPeer : IDisposable
     public IPAddress MyIpAddress { get; set; } = null;
     public string MyHostName { get; set; }
     public string UrlSignalingServer { get; set; }= "http://192.168.178.21:5245/api/WebRTCSignal"; // "http://localhost:5245/api/WebRTCSignal"; // "https://sipsorcery.cloud/api/webrtcsignal";
-    public string MyName { get; set; }= "uni";
-    public string TargetName { get; set; }= "bro";
+    public string MyName { get; set; } = "uni";
+    public string TargetName { get; set; } = "bro";
     public ushort PortPairBegin { get; set; } = 0;
 
     private static ILogger logger;
@@ -186,7 +186,7 @@ public class WebRTCPeer : IDisposable
         {
             try
             {
-                this.VideoEncoderEndPoint = new DemoFFmpegEndPoint();
+                this.VideoEncoderEndPoint = new DemoFFmpegEndPoint() { Width = 640, Height = 480, FramesPerSecond = 30 };
             }
             catch (Exception e)
             {
