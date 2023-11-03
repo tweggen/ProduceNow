@@ -34,6 +34,35 @@ public class DemoFFmpegOwner
 
     private DemoFFmpegOwner()
     {
-        FFmpegInit.Initialise(FfmpegLogLevelEnum.AV_LOG_INFO, "../../../ffmpeg-win/");
+        bool haveIt = false;
+        if (!haveIt)
+        {
+            try
+            {
+                FFmpegInit.Initialise(FfmpegLogLevelEnum.AV_LOG_TRACE, "/lib/x86_64-linux-gnu/");
+                haveIt = true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Unable to open ffmpeg: {e}");
+            }
+        }
+        if (!haveIt)
+        {
+            try
+            {
+                FFmpegInit.Initialise(FfmpegLogLevelEnum.AV_LOG_TRACE, "../../../ffmpeg-win/");
+                haveIt = true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Unable to open ffmpeg: {e}");
+            }
+        }
+
+        if (!haveIt)
+        {
+            throw new InvalidOperationException("No ffmpeg found.");
+        }
     }
 }
