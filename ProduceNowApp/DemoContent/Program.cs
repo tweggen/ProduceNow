@@ -1,4 +1,5 @@
-﻿using DemoContent;
+﻿
+using DemoContent;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,8 @@ public class Program
         builder.Logging.AddConsole();
         var app = builder.Build();
         ApplicationLogging.UseFactory = app.Services.GetRequiredService<ILoggerFactory>();
+
+        DemoFFmpegOwner? ffmpegOwner = DemoFFmpegOwner.Instance;
         var demoContent = new DemoContent.Main();
         demoContent.Start();
         app.Run();

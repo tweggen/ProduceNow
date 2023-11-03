@@ -24,15 +24,13 @@ public class WebRTCPeer : IDisposable
     private bool _isClosed = false;
     
     private WebRTCRestSignalingPeer _webrtcRestSignaling;
-    public VideoEncoderEndPoint  VideoEncoderEndPoint { get; }
+    public IVideoEndPoint  VideoEncoderEndPoint { get; }
     
-   
     private CancellationTokenSource _cts;
 
     public delegate void OnCloseHandler(string reason);
     public event OnCloseHandler OnClose;
-
-
+    
     public RTCCertificate2 RtcCertificate2;
     
     
@@ -184,33 +182,36 @@ public class WebRTCPeer : IDisposable
     {
         logger = ApplicationLogging.LoggerFactory.CreateLogger<WebRTCPeer>();
 
-        try
+        if (DemoFFmpegOwner.Instance != null)
         {
-            VideoEncoderEndPoint = new SIPSorceryMedia.Encoders.VideoEncoderEndPoint();
+            try
+            {
+                this.VideoEncoderEndPoint = new DemoFFmpegEndPoint();
+            }
+            catch (Exception e)
+            {
+                logger.LogInformation($"Unable to instantiate ffmpeg video encoder: {e}.");
+            }
         }
-        catch (Exception e)
+
+        if (null == this.VideoEncoderEndPoint)
         {
-            logger.LogInformation("Unable to use libvpx encoder. Trying next.");
+            try
+            {
+                VideoEncoderEndPoint = new DemoVpxEndpoint();
+            }
+            catch (Exception e)
+            {
+                logger.LogInformation("Unable to use libvpx encoder. Trying next.");
+            }
         }
 
         if (null == VideoEncoderEndPoint)
         {
-            //   try
-            //   {
-            //        //VideoEncoderEndPoint = new SIPSorceryMedia.FFmpeg.FFmpegVideoEndPoint();
-            //   }
             throw new ApplicationException("Unable to find an encoder implementation.");
         }
         
         MyHostName = Dns.GetHostName();
         logger.LogInformation($"Running on host \"{MyHostName}\"");
-#if false
-        var hostEntry = Dns.GetHostEntry(MyHostName);
-        var myAddresses = hostEntry.AddressList; 
-        // IsIPv4 == true AddressFamily == InterNetwork
-        MyIpAddress = myAddresses[0];
-        logger.LogInformation($"Detected IP address {MyIpAddress}");
-#endif
-
     }
 }
