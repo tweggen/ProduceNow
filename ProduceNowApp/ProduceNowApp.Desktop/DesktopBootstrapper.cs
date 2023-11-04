@@ -1,26 +1,60 @@
 using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using SIPSorceryMedia.Abstractions;
+using SIPSorceryMedia.FFmpeg;
 using Splat;
 
 namespace ProduceNowApp.Desktop;
 
 public class DesktopBootstrapper
 {
-    public DesktopBootstrapper(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
+    private Microsoft.Extensions.Logging.ILogger _logger = 
+        ProduceNow.Common.ApplicationLogging.LoggerFactory.CreateLogger<DesktopBootstrapper>();
+    public DesktopBootstrapper(
+        IMutableDependencyResolver services,
+        IReadonlyDependencyResolver resolver)
     {
         /*
-         * First check, if we have ffmpeg installed 
+         * Perform one-time ffmpeg initialization. 
          */
         ProduceNow.FFmpeg.Owner? ffmpegOwner = ProduceNow.FFmpeg.Owner.Instance;
-        
-        try
+        bool haveIt = false;
+
+        if (!haveIt)
         {
-            // Call services.Register<T> and pass it lambda that creates instance of your service
-            services.Register<SIPSorceryMedia.Abstractions.IVideoEncoder>(
-                () => new SIPSorceryMedia.Encoders.VpxVideoEncoder());
+            try
+            {
+                // Call services.Register<T> and pass it lambda that creates instance of your service
+                services.Register<SIPSorceryMedia.Abstractions.IVideoEncoder>(
+                    () => new SIPSorceryMedia.Encoders.VpxVideoEncoder());
+                haveIt = true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation("Unable to use libvpx encoder. Trying next.");
+            }
         }
-        catch (Exception e)
+
+        if (!haveIt && null != ffmpegOwner)
         {
-            
+            try
+            {
+                services.Register<SIPSorceryMedia.Abstractions.IVideoEncoder>(
+                    () => new FFmpegVideoEncoder(new Dictionary<string, string>()));
+                haveIt = true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation($"Unable to instantiate ffmpeg video encoder: {e}.");
+            }
         }
+
+        if (!haveIt)
+        {
+            _logger.LogError("Unable to find an encoder implementation.");
+            throw new ApplicationException("Unable to find an encoder implementation.");
+        }
+
     }
 }
