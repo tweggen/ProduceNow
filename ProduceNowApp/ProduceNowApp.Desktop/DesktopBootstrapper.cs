@@ -21,21 +21,6 @@ public class DesktopBootstrapper
         ProduceNow.FFmpeg.Owner? ffmpegOwner = ProduceNow.FFmpeg.Owner.Instance;
         bool haveIt = false;
 
-        if (!haveIt)
-        {
-            try
-            {
-                // Call services.Register<T> and pass it lambda that creates instance of your service
-                services.Register<SIPSorceryMedia.Abstractions.IVideoEncoder>(
-                    () => new SIPSorceryMedia.Encoders.VpxVideoEncoder());
-                haveIt = true;
-            }
-            catch (Exception e)
-            {
-                _logger.LogInformation("Unable to use libvpx encoder. Trying next.");
-            }
-        }
-
         if (!haveIt && null != ffmpegOwner)
         {
             try
@@ -50,6 +35,21 @@ public class DesktopBootstrapper
             }
         }
 
+        if (!haveIt)
+        {
+            try
+            {
+                // Call services.Register<T> and pass it lambda that creates instance of your service
+                services.Register<SIPSorceryMedia.Abstractions.IVideoEncoder>(
+                    () => new SIPSorceryMedia.Encoders.VpxVideoEncoder());
+                haveIt = true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation("Unable to use libvpx encoder. Trying next.");
+            }
+        }
+ 
         if (!haveIt)
         {
             _logger.LogError("Unable to find an encoder implementation.");
