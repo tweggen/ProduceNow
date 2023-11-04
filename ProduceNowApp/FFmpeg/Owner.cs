@@ -1,13 +1,15 @@
 ﻿using SIPSorceryMedia.FFmpeg;
 
-namespace DemoContent;
 
-public class DemoFFmpegOwner
+namespace ProduceNow.FFmpeg;
+
+
+public class Owner
 {
     static private object _lo = new();
-    static private DemoFFmpegOwner? _instance = null;
+    static private Owner? _instance = null;
     static private bool _tried = false;
-    static public DemoFFmpegOwner Instance
+    static public Owner Instance
     {
         get
         {
@@ -17,7 +19,7 @@ public class DemoFFmpegOwner
                 {
                     try
                     {
-                        _instance = new DemoFFmpegOwner();
+                        _instance = new Owner();
                     }
                     catch (Exception e)
                     {
@@ -32,7 +34,7 @@ public class DemoFFmpegOwner
         }
     }
 
-    private DemoFFmpegOwner()
+    private Owner()
     {
         bool haveIt = false;
         if (!haveIt)

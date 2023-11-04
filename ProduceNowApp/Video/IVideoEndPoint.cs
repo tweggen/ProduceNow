@@ -1,6 +1,6 @@
 using SIPSorceryMedia.Abstractions;
 
-namespace DemoContent;
+namespace ProduceNow.Video;
 
 public interface IVideoEndPoint : IDisposable
 {

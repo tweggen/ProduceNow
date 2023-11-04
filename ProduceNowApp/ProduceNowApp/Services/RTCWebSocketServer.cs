@@ -367,9 +367,7 @@ public class RTCWebSocketServer
         }
         // logger = AddConsoleLogger();
         _cts = new CancellationTokenSource();
-        logger.LogError("Serilog: gravi off navi on!");
         Console.WriteLine("Console: gravi off navi on!");
-        Debug.WriteLine("Debug: gravi off navi on!");
 
         var videoEncoder = Splat.Locator.Current.GetService<IVideoEncoder>();
         _videoEP = new AvaloniaVideoEndpoint(videoEncoder);

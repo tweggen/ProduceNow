@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Channels;
 using ProduceNowApp.Models;
 using ProduceNowApp.Services;
 using Splat;
