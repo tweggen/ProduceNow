@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Video", "Video\Video.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vpx", "Vpx\Vpx.csproj", "{3A7FC800-927E-4596-AF8A-E0D7C23F8008}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{2FE834BC-E1BA-430C-9850-03E7C49B431E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +129,14 @@ Global
 		{3A7FC800-927E-4596-AF8A-E0D7C23F8008}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3A7FC800-927E-4596-AF8A-E0D7C23F8008}.Release|ARM64.ActiveCfg = Release|Any CPU
 		{3A7FC800-927E-4596-AF8A-E0D7C23F8008}.Release|ARM64.Build.0 = Release|Any CPU
+		{2FE834BC-E1BA-430C-9850-03E7C49B431E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FE834BC-E1BA-430C-9850-03E7C49B431E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FE834BC-E1BA-430C-9850-03E7C49B431E}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{2FE834BC-E1BA-430C-9850-03E7C49B431E}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{2FE834BC-E1BA-430C-9850-03E7C49B431E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FE834BC-E1BA-430C-9850-03E7C49B431E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FE834BC-E1BA-430C-9850-03E7C49B431E}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{2FE834BC-E1BA-430C-9850-03E7C49B431E}.Release|ARM64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

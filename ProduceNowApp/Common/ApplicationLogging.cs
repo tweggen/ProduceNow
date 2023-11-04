@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace DemoContent;
+namespace ProduceNow.Common;
 
 public static class ApplicationLogging
 {

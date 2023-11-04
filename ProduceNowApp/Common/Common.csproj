@@ -2,16 +2,13 @@
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>Common_</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="SIPSorceryMedia.FFmpeg" Version="1.2.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Video\Video.csproj" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
     </ItemGroup>
 
 </Project>

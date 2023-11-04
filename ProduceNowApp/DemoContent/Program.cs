@@ -1,8 +1,8 @@
-﻿
-using DemoContent;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
+namespace ProduceNow.DemoContent;
 
 public class Program
 {
@@ -12,9 +12,9 @@ public class Program
         builder.Logging.ClearProviders();
         builder.Logging.AddConsole();
         var app = builder.Build();
-        ApplicationLogging.UseFactory = app.Services.GetRequiredService<ILoggerFactory>();
+        Common.ApplicationLogging.UseFactory = app.Services.GetRequiredService<ILoggerFactory>();
 
-        DemoFFmpegOwner? ffmpegOwner = DemoFFmpegOwner.Instance;
+        FFmpeg.Owner? ffmpegOwner = FFmpeg.Owner.Instance;
         var demoContent = new DemoContent.Main();
         demoContent.Start();
         app.Run();

@@ -1,14 +1,11 @@
 using System.Net;
 using System.Net.NetworkInformation;
-using System.Xml;
 using Microsoft.Extensions.Logging;
 using SIPSorcery.Media;
 using SIPSorcery.Net;
 using SIPSorcery.Sys;
-using SIPSorceryMedia.Abstractions;
-using SIPSorceryMedia.Encoders;
 
-namespace DemoContent;
+namespace ProduceNow.DemoContent;
 
 public class WebRTCPeer : IDisposable
 {
@@ -24,7 +21,7 @@ public class WebRTCPeer : IDisposable
     private bool _isClosed = false;
     
     private WebRTCRestSignalingPeer _webrtcRestSignaling;
-    public IVideoEndPoint  VideoEncoderEndPoint { get; }
+    public Video.IVideoEndPoint  VideoEncoderEndPoint { get; }
     
     private CancellationTokenSource _cts;
 
@@ -180,13 +177,13 @@ public class WebRTCPeer : IDisposable
     
     public WebRTCPeer()
     {
-        logger = ApplicationLogging.LoggerFactory.CreateLogger<WebRTCPeer>();
+        logger = Common.ApplicationLogging.LoggerFactory.CreateLogger<WebRTCPeer>();
 
-        if (DemoFFmpegOwner.Instance != null)
+        if (FFmpeg.Owner.Instance != null)
         {
             try
             {
-                this.VideoEncoderEndPoint = new DemoFFmpegEndPoint() { Width = 640, Height = 480, FramesPerSecond = 30 };
+                this.VideoEncoderEndPoint = new FFmpeg.EndPoint() { Width = 640, Height = 480, FramesPerSecond = 30 };
             }
             catch (Exception e)
             {
@@ -198,7 +195,7 @@ public class WebRTCPeer : IDisposable
         {
             try
             {
-                VideoEncoderEndPoint = new DemoVpxEndpoint();
+                VideoEncoderEndPoint = new Vpx.EndPoint();
             }
             catch (Exception e)
             {

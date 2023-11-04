@@ -2,9 +2,9 @@
 using SIPSorceryMedia.Abstractions;
 using SIPSorceryMedia.FFmpeg;
 
-namespace DemoContent;
+namespace ProduceNow.FFmpeg;
 
-public class DemoFFmpegEndPoint : IVideoEndPoint
+public class EndPoint : Video.IVideoEndPoint
 {
     private VideoFrameConverter _videoFrameConverter;
     private readonly FFmpegVideoEncoder _ffmpegEncoder;
@@ -41,7 +41,7 @@ public class DemoFFmpegEndPoint : IVideoEndPoint
         var i420Frame = _videoFrameConverter.Convert(sample);
         _presentationTimestamp += durationMilliseconds;
         i420Frame.pts = _presentationTimestamp;
-        byte[] encodedBuffer = _ffmpegEncoder.Encode(AVCodecID.AV_CODEC_ID_VP8, i420Frame, (int)FramesPerSecond);
+        byte[]? encodedBuffer = _ffmpegEncoder.Encode(AVCodecID.AV_CODEC_ID_VP8, i420Frame, (int)FramesPerSecond);
         if (encodedBuffer != null)
         {
             OnVideoSourceEncodedSample?.Invoke(
@@ -78,7 +78,7 @@ public class DemoFFmpegEndPoint : IVideoEndPoint
     }
     
 
-    public DemoFFmpegEndPoint()
+    public EndPoint()
     {
         _ffmpegEncoder = new FFmpegVideoEncoder();
         

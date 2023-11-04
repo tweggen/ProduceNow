@@ -3,7 +3,7 @@ using Org.BouncyCastle.Crypto;
 using SIPSorcery.Net;
 using Microsoft.Extensions.Logging;
 
-namespace DemoContent;
+namespace ProduceNow.DemoContent;
 
 public class Main
 {
@@ -114,7 +114,7 @@ public class Main
 
     public Main()
     {
-        _logger = ApplicationLogging.LoggerFactory.CreateLogger<Main>();
+        _logger = Common.ApplicationLogging.LoggerFactory.CreateLogger<Main>();
         _setup();
     }
 }

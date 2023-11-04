@@ -6,4 +6,13 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Video\Video.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="SIPSorceryMedia.Abstractions" Version="1.2.0" />
+      <PackageReference Include="SIPSorceryMedia.Encoders" Version="0.0.12-pre" />
+    </ItemGroup>
+
 </Project>
