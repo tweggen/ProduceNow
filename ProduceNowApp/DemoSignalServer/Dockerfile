@@ -2,7 +2,6 @@
 WORKDIR /app
 EXPOSE 5245
 
-
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["DemoSignalServer/DemoSignalServer.csproj", "DemoSignalServer/"]
